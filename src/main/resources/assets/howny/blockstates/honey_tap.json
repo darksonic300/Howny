@@ -1,0 +1,8 @@
+{
+	"variants": {
+		"facing=north": { "model": "howny:block/honey_tap"},
+		"facing=east": { "model": "howny:block/honey_tap", "y": 90},
+		"facing=south": { "model": "howny:block/honey_tap", "y": 180},
+		"facing=west": { "model": "howny:block/honey_tap", "y": 270}
+	}
+}
