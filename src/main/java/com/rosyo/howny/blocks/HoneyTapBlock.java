@@ -1,7 +1,9 @@
 package com.rosyo.howny.blocks;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.particle.DripParticle;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -13,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.WaterFluid;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -23,7 +26,10 @@ public class HoneyTapBlock extends Block {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    private static final VoxelShape SHAPE =  makeShape();
+    private static final VoxelShape SHAPE_N = makeShape('n');
+    private static final VoxelShape SHAPE_E = makeShape('e');
+    private static final VoxelShape SHAPE_S = makeShape('s');
+    private static final VoxelShape SHAPE_W = makeShape('w');
 
     public HoneyTapBlock(Properties properties) {
         super(properties);
@@ -37,24 +43,57 @@ public class HoneyTapBlock extends Block {
                 level.getBlockState(blockPos.south()).getBlock() == Blocks.BEEHIVE || level.getBlockState(blockPos.south()).getBlock() == Blocks.BEE_NEST ||
                 level.getBlockState(blockPos.east()).getBlock() == Blocks.BEEHIVE || level.getBlockState(blockPos.east()).getBlock() == Blocks.BEE_NEST))
         {
-            LOGGER.debug("Trying to break tap.");
+            level.getRandomPlayer().sendSystemMessage(Component.literal("Breaking tap!"));
             level.destroyBlock(blockPos, false);
         }
-        level.destroyBlock(blockPos, false);
-        level.getRandomPlayer().sendSystemMessage(Component.literal("Hello!"));
         super.tick(blockState, level, blockPos, randomSource);
     }
 
-    /* @Override
+    @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        return SHAPE;
-    }*/
+        return switch(pState.getValue(FACING)) {
+            case NORTH:
+                yield SHAPE_N;
 
-    public static VoxelShape makeShape(){
+            case WEST:
+                yield SHAPE_W;
+
+            case SOUTH:
+                yield SHAPE_S;
+
+            case EAST:
+                yield SHAPE_E;
+
+            default:
+                yield SHAPE_N;
+        };
+    }
+
+    public static VoxelShape makeShape(char direction){
         VoxelShape shape = Shapes.empty();
-        shape = Shapes.join(shape, Shapes.box(0.4375, -0.1875, 0.875, 0.5625, 0.4375, 1), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.375, 0.3125, 0.875, 0.625, 0.5625, 1), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.375, 0.25, 0.625, 0.625, 0.3125, 0.6875), BooleanOp.OR);
+
+        switch (direction){
+            case 'n':
+                shape = Shapes.join(shape, Shapes.box(0.4375, -0.1875, 0.875, 0.5625, 0.4375, 1), BooleanOp.OR);
+                shape = Shapes.join(shape, Shapes.box(0.375, 0.3125, 0.875, 0.625, 0.5625, 1), BooleanOp.OR);
+                shape = Shapes.join(shape, Shapes.box(0.375, 0.25, 0.625, 0.625, 0.3125, 0.6875), BooleanOp.OR);
+            case 'e':
+                shape = Shapes.join(shape, Shapes.box(0.4375, -0.1875, 0.875, 0.5625, 0.4375, 1), BooleanOp.OR);
+                shape = Shapes.join(shape, Shapes.box(0.375, 0.3125, 0.875, 0.625, 0.5625, 1), BooleanOp.OR);
+                shape = Shapes.join(shape, Shapes.box(0.375, 0.25, 0.625, 0.625, 0.3125, 0.6875), BooleanOp.OR);
+            case 's':
+                shape = Shapes.join(shape, Shapes.box(0.4375, -0.1875, 0.875, 0.5625, 0.4375, 1), BooleanOp.OR);
+                shape = Shapes.join(shape, Shapes.box(0.375, 0.3125, 0.875, 0.625, 0.5625, 1), BooleanOp.OR);
+                shape = Shapes.join(shape, Shapes.box(0.375, 0.25, 0.625, 0.625, 0.3125, 0.6875), BooleanOp.OR);
+            case 'w':
+                shape = Shapes.join(shape, Shapes.box(0.4375, -0.1875, 0.875, 0.5625, 0.4375, 1), BooleanOp.OR);
+                shape = Shapes.join(shape, Shapes.box(0.375, 0.3125, 0.875, 0.625, 0.5625, 1), BooleanOp.OR);
+                shape = Shapes.join(shape, Shapes.box(0.375, 0.25, 0.625, 0.625, 0.3125, 0.6875), BooleanOp.OR);
+            default:
+                shape = Shapes.join(shape, Shapes.box(0.4375, -0.1875, 0.875, 0.5625, 0.4375, 1), BooleanOp.OR);
+                shape = Shapes.join(shape, Shapes.box(0.375, 0.3125, 0.875, 0.625, 0.5625, 1), BooleanOp.OR);
+                shape = Shapes.join(shape, Shapes.box(0.375, 0.25, 0.625, 0.625, 0.3125, 0.6875), BooleanOp.OR);
+        }
 
         return shape;
     }

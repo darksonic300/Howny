@@ -3,6 +3,7 @@ package com.rosyo.howny;
 import com.mojang.logging.LogUtils;
 import com.rosyo.howny.init.BlockRegistry;
 import com.rosyo.howny.init.ItemRegistry;
+import com.rosyo.howny.utils.HoneyCauldronInteraction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CreativeModeTabEvent;
@@ -43,9 +44,9 @@ public class Howny
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
-
-        //LOGGER.info("HELLO FROM COMMON SETUP");
-        //LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
+        event.enqueueWork(() -> {
+            HoneyCauldronInteraction.bootStrap();
+        });
     }
 
     private void addCreative(CreativeModeTabEvent.BuildContents event)
