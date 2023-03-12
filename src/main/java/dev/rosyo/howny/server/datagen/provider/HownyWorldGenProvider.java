@@ -1,4 +1,4 @@
-package com.rosyo.howny.datagen;
+package dev.rosyo.howny.server.datagen.provider;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;

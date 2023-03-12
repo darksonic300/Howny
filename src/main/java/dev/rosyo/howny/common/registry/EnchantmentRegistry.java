@@ -1,10 +1,8 @@
-package com.rosyo.howny.init;
+package dev.rosyo.howny.common.registry;
 
-import com.rosyo.howny.Howny;
-import com.rosyo.howny.enchantments.StingEnchantment;
-import com.rosyo.howny.items.BeeHeartItem;
+import dev.rosyo.howny.Howny;
+import dev.rosyo.howny.common.enchantment.StingEnchantment;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;

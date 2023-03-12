@@ -1,4 +1,4 @@
-package com.rosyo.howny.utils;
+package dev.rosyo.howny.common.util;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -6,14 +6,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.RespawnAnchorBlock;
 
 import javax.annotation.Nullable;
 
-public class HoneyUtils {
+public class HoneyUtil {
 
     public static Item byName(String p_43490_) {
         return BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(p_43490_));

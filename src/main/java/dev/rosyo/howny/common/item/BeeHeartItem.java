@@ -1,4 +1,4 @@
-package com.rosyo.howny.items;
+package dev.rosyo.howny.common.item;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;

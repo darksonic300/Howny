@@ -1,6 +1,6 @@
-package com.rosyo.howny.datagen;
+package dev.rosyo.howny.server.datagen.loottable;
 
-import com.rosyo.howny.init.BlockRegistry;
+import dev.rosyo.howny.common.registry.BlockRegistry;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
@@ -8,8 +8,8 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Set;
 
-public class HownyBlockLootTables extends BlockLootSubProvider {
-    public HownyBlockLootTables() {
+public class HownyBlockLootTable extends BlockLootSubProvider {
+    public HownyBlockLootTable() {
         super(Set.of(), FeatureFlags.REGISTRY.allFlags());
     }
 

@@ -1,8 +1,8 @@
-package com.rosyo.howny.init;
+package dev.rosyo.howny.common.registry;
 
-import com.rosyo.howny.Howny;
-import com.rosyo.howny.blocks.HoneyCauldronBlock;
-import com.rosyo.howny.blocks.HoneyTapBlock;
+import dev.rosyo.howny.Howny;
+import dev.rosyo.howny.common.block.HoneyCauldronBlock;
+import dev.rosyo.howny.common.block.HoneyTapBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;

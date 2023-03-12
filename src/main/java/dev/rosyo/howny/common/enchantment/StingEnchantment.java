@@ -1,4 +1,4 @@
-package com.rosyo.howny.enchantments;
+package dev.rosyo.howny.common.enchantment;
 
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;

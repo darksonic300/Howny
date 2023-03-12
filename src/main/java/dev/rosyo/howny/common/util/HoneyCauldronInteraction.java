@@ -1,7 +1,7 @@
-package com.rosyo.howny.utils;
+package dev.rosyo.howny.common.util;
 
-import com.rosyo.howny.blocks.HoneyCauldronBlock;
-import com.rosyo.howny.init.BlockRegistry;
+import dev.rosyo.howny.common.block.HoneyCauldronBlock;
+import dev.rosyo.howny.common.registry.BlockRegistry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;

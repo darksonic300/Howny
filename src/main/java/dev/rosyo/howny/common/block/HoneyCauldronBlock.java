@@ -1,6 +1,6 @@
-package com.rosyo.howny.blocks;
+package dev.rosyo.howny.common.block;
 
-import com.rosyo.howny.utils.HoneyCauldronInteraction;
+import dev.rosyo.howny.common.util.HoneyCauldronInteraction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;

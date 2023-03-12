@@ -1,6 +1,6 @@
-package com.rosyo.howny.datagen;
+package dev.rosyo.howny.server.datagen.provider;
 
-import com.rosyo.howny.Howny;
+import dev.rosyo.howny.Howny;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.BlockStateProvider;

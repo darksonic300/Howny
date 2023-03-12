@@ -1,6 +1,9 @@
-package com.rosyo.howny.datagen;
+package dev.rosyo.howny.server.datagen;
 
-import com.rosyo.howny.Howny;
+import dev.rosyo.howny.Howny;
+import dev.rosyo.howny.server.datagen.provider.HownyBlockStateProvider;
+import dev.rosyo.howny.server.datagen.provider.HownyLootTableProvider;
+import dev.rosyo.howny.server.datagen.provider.HownyRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -23,6 +26,8 @@ public class DataGenerators {
         generator.addProvider(true, new HownyRecipeProvider(packOutput));
         generator.addProvider(true, HownyLootTableProvider.create(packOutput));
         generator.addProvider(true, new HownyBlockStateProvider(packOutput, existingFileHelper));
+
+        //TODO: make new providers
         //generator.addProvider(true, new HownyItemModelProvider(packOutput, existingFileHelper));
         //generator.addProvider(event.includeServer(), new HownyWorldGenProvider(packOutput, lookupProvider));
     }

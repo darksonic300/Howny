@@ -1,7 +1,7 @@
-package com.rosyo.howny.datagen;
+package dev.rosyo.howny.server.datagen.provider;
 
-import com.rosyo.howny.Howny;
-import com.rosyo.howny.init.BlockRegistry;
+import dev.rosyo.howny.Howny;
+import dev.rosyo.howny.common.registry.BlockRegistry;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;

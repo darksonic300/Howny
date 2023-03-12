@@ -1,6 +1,6 @@
-package com.rosyo.howny.datagen;
+package dev.rosyo.howny.server.datagen.provider;
 
-import com.rosyo.howny.Howny;
+import dev.rosyo.howny.Howny;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;

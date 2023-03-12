@@ -1,7 +1,7 @@
-package com.rosyo.howny.blocks;
+package dev.rosyo.howny.common.block;
 
 import com.mojang.logging.LogUtils;
-import com.rosyo.howny.init.BlockRegistry;
+import dev.rosyo.howny.common.registry.BlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;

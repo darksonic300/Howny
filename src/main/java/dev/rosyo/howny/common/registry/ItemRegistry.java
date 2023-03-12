@@ -1,11 +1,8 @@
-package com.rosyo.howny.init;
+package dev.rosyo.howny.common.registry;
 
-import com.rosyo.howny.Howny;
-import com.rosyo.howny.items.BeeHeartItem;
-import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.food.Foods;
+import dev.rosyo.howny.Howny;
+import dev.rosyo.howny.common.item.BeeHeartItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
