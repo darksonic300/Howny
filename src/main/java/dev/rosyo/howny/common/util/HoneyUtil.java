@@ -20,8 +20,9 @@ public class HoneyUtil {
     }
 
     public static Item getFood(@Nullable CompoundTag p_43578_) {
-        return p_43578_ == null ? Items.GLASS_BOTTLE : HoneyUtils.byName(p_43578_.getString("Food"));
+        return p_43578_ == null ? Items.GLASS_BOTTLE : HoneyUtil.byName(p_43578_.getString("Food"));
     }
+
     public static ItemStack setFood(ItemStack p_43550_, Item p_43551_) {
         ResourceLocation resourcelocation = BuiltInRegistries.ITEM.getKey(p_43551_);
         if (p_43551_ == Items.GLASS_BOTTLE) {

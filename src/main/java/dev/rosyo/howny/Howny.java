@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import dev.rosyo.howny.common.registry.BlockRegistry;
 import dev.rosyo.howny.common.registry.EnchantmentRegistry;
 import dev.rosyo.howny.common.registry.ItemRegistry;
+import dev.rosyo.howny.common.registry.VillagerRegistry;
 import dev.rosyo.howny.common.util.HoneyCauldronInteraction;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.common.MinecraftForge;
@@ -27,8 +28,9 @@ public class Howny {
         BlockRegistry.register(modEventBus);
         EnchantmentRegistry.register(modEventBus);
         ItemRegistry.register(modEventBus);
-        MinecraftForge.EVENT_BUS.register(this);
+        VillagerRegistry.register(modEventBus);
 
+        MinecraftForge.EVENT_BUS.register(this);
         modEventBus.addListener(this::addCreative);
     }
 

@@ -5,6 +5,7 @@ import dev.rosyo.howny.common.block.HoneyCauldronBlock;
 import dev.rosyo.howny.common.block.HoneyTapBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.BeehiveBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -25,6 +26,9 @@ public class BlockRegistry {
                     .noOcclusion().dynamicShape().instabreak().randomTicks()));
     public static final RegistryObject<Block> HONEY_CAULDRON = registerBlock("honey_cauldron",
             () -> new HoneyCauldronBlock(BlockBehaviour.Properties.copy(CAULDRON)));
+
+    public static final RegistryObject<Block> APIARY_BLOCK = registerBlock("apiary_block",
+            () -> new BeehiveBlock(BlockBehaviour.Properties.copy(Blocks.BEEHIVE)));
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
