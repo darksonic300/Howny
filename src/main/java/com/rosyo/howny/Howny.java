@@ -2,8 +2,10 @@ package com.rosyo.howny;
 
 import com.mojang.logging.LogUtils;
 import com.rosyo.howny.init.BlockRegistry;
+import com.rosyo.howny.init.EnchantmentRegistry;
 import com.rosyo.howny.init.ItemRegistry;
 import com.rosyo.howny.utils.HoneyCauldronInteraction;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CreativeModeTabEvent;
@@ -32,8 +34,9 @@ public class Howny
         modEventBus.addListener(this::commonSetup);
         //modEventBus.addListener(this::dataSetup);
 
-        BlockRegistry.BLOCKS.register(modEventBus);
-        ItemRegistry.ITEMS.register(modEventBus);
+        BlockRegistry.register(modEventBus);
+        EnchantmentRegistry.register(modEventBus);
+        ItemRegistry.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -51,8 +54,11 @@ public class Howny
 
     private void addCreative(CreativeModeTabEvent.BuildContents event)
     {
-        //if (event.getTab() == CreativeModeTabs.BUILDING_BLOCKS)
-            //event.accept();
+        if (event.getTab() == CreativeModeTabs.FUNCTIONAL_BLOCKS)
+            event.accept(BlockRegistry.HONEY_TAP.get());
+
+        if (event.getTab() == CreativeModeTabs.INGREDIENTS)
+            event.accept(ItemRegistry.BEE_HEART.get());
     }
 
     /*public void dataSetup(GatherDataEvent event) {

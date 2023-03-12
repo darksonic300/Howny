@@ -1,6 +1,6 @@
 package com.rosyo.howny.utils;
 
-import com.rosyo.howny.blocks.HoneyCauldron;
+import com.rosyo.howny.blocks.HoneyCauldronBlock;
 import com.rosyo.howny.init.BlockRegistry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.Util;
@@ -18,23 +18,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 
 import java.util.Map;
-import java.util.function.Predicate;
 
 public interface HoneyCauldronInteraction {
         Map<Item, CauldronInteraction> HONEY = newInteractionMap();
 
-        net.minecraft.core.cauldron.CauldronInteraction FILL_HONEY = (p_175676_, p_175677_, p_175678_, p_175679_, p_175680_, p_175681_) -> emptyBottle(p_175677_, p_175678_, p_175679_, p_175680_, p_175681_, BlockRegistry.HONEY_CAULDRON.get().defaultBlockState(), SoundEvents.BUCKET_EMPTY);
+        net.minecraft.core.cauldron.CauldronInteraction FILL_HONEY = (blockState, level, blockPos, player, hand, itemStack)
+                -> emptyBottle(BlockRegistry.HONEY_CAULDRON.get().defaultBlockState().setValue(HoneyCauldronBlock.LEVEL, Integer.valueOf(3)), level, blockPos, player, hand, itemStack);
 
 
         static Object2ObjectOpenHashMap<Item, CauldronInteraction> newInteractionMap() {
@@ -44,16 +38,34 @@ public interface HoneyCauldronInteraction {
         }
         static void bootStrap() {
 
-            addDefaultInteractions(HONEY);
+            addDefaultInteractions(CauldronInteraction.EMPTY);
 
-            HONEY.put(Items.GLASS_BOTTLE, (p_175697_, p_175698_, p_175699_, p_175700_, p_175701_, p_175702_) -> {
-                return fillBottle(p_175697_, p_175698_, p_175699_, p_175700_, p_175701_, p_175702_, new ItemStack(Items.HONEY_BOTTLE), SoundEvents.BOTTLE_FILL);
+            CauldronInteraction.EMPTY.put(Items.HONEY_BOTTLE, (blockState, level, pos, player, hand, itemStack) -> {
+                if (itemStack.getItem() != Items.HONEY_BOTTLE) {
+                    return InteractionResult.PASS;
+                } else {
+                    if (!level.isClientSide) {
+                        Item item = itemStack.getItem();
+                        player.setItemInHand(hand, ItemUtils.createFilledResult(itemStack, player, new ItemStack(Items.GLASS_BOTTLE)));
+                        player.awardStat(Stats.USE_CAULDRON);
+                        player.awardStat(Stats.ITEM_USED.get(item));
+                        level.setBlockAndUpdate(pos, BlockRegistry.HONEY_CAULDRON.get().defaultBlockState());
+                        level.playSound((Player)null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        level.gameEvent((Entity)null, GameEvent.FLUID_PLACE, pos);
+                    }
+
+                    return InteractionResult.sidedSuccess(level.isClientSide);
+                }
             });
 
-            CauldronInteraction.EMPTY.put(Items.HONEY_BOTTLE, HoneyCauldronInteraction.FILL_HONEY);
+            addDefaultInteractions(HONEY);
 
-            HONEY.put(Items.HONEY_BOTTLE, (p_175697_, p_175698_, p_175699_, p_175700_, p_175701_, p_175702_) -> {
-                return emptyBottle(p_175698_, p_175699_, p_175700_, p_175701_, new ItemStack(Items.GLASS_BOTTLE), p_175697_, SoundEvents.BOTTLE_EMPTY);
+            HONEY.put(Items.GLASS_BOTTLE, (blockState, level, blockPos, player, hand, itemStack) -> {
+                return fillBottle(blockState, level, blockPos, player, hand, itemStack, new ItemStack(Items.HONEY_BOTTLE), SoundEvents.BOTTLE_FILL);
+            });
+
+            HONEY.put(Items.HONEY_BOTTLE, (blockState, level, blockPos, player, hand, itemStack) -> {
+                return emptyBottle(blockState, level, blockPos, player, hand, itemStack);
             });
 
         }
@@ -63,13 +75,12 @@ public interface HoneyCauldronInteraction {
         }
 
     static InteractionResult fillBottle(BlockState state, Level level, BlockPos blockPos, Player player, InteractionHand hand, ItemStack itemStack, ItemStack itemStack1, SoundEvent soundEvent) {
-
         if (!level.isClientSide) {
             Item item = itemStack.getItem();
             player.setItemInHand(hand, ItemUtils.createFilledResult(itemStack, player, new ItemStack(Items.HONEY_BOTTLE)));
             player.awardStat(Stats.USE_CAULDRON);
             player.awardStat(Stats.ITEM_USED.get(item));
-            LayeredCauldronBlock.lowerFillLevel(state, level, blockPos);
+            HoneyCauldronBlock.lowerFillLevel(state, level, blockPos);
             level.playSound((Player)null, blockPos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
             level.gameEvent((Entity)null, GameEvent.FLUID_PICKUP, blockPos);
         }
@@ -77,15 +88,15 @@ public interface HoneyCauldronInteraction {
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
-    static InteractionResult emptyBottle(Level level, BlockPos blockPos, Player player, InteractionHand hand, ItemStack itemStack, BlockState state, SoundEvent soundEvent) {
-        if (state.getValue(LayeredCauldronBlock.LEVEL) != 3 && itemStack.getItem() == Items.HONEY_BOTTLE) {
+    static InteractionResult emptyBottle(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, ItemStack itemStack) {
+        if (blockState.getValue(HoneyCauldronBlock.LEVEL) != 3 && itemStack.getItem() == Items.HONEY_BOTTLE) {
             if (!level.isClientSide) {
                 player.setItemInHand(hand, ItemUtils.createFilledResult(itemStack, player, new ItemStack(Items.GLASS_BOTTLE)));
                 player.awardStat(Stats.USE_CAULDRON);
                 player.awardStat(Stats.ITEM_USED.get(itemStack.getItem()));
-                level.setBlockAndUpdate(blockPos, state.cycle(LayeredCauldronBlock.LEVEL));
-                level.playSound((Player) null, blockPos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-                level.gameEvent((Entity) null, GameEvent.FLUID_PLACE, blockPos);
+                level.setBlockAndUpdate(blockPos, blockState.cycle(HoneyCauldronBlock.LEVEL));
+                level.playSound((Player)null, blockPos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+                level.gameEvent((Entity)null, GameEvent.FLUID_PLACE, blockPos);
             }
 
             return InteractionResult.sidedSuccess(level.isClientSide);
