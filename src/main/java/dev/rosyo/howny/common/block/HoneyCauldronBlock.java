@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 
+
 public class HoneyCauldronBlock extends AbstractCauldronBlock {
 
     public static final int MIN_FILL_LEVEL = 1;
