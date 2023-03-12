@@ -59,6 +59,9 @@ public class Howny
 
         if (event.getTab() == CreativeModeTabs.INGREDIENTS)
             event.accept(ItemRegistry.BEE_HEART.get());
+
+        if (event.getTab() == CreativeModeTabs.FOOD_AND_DRINKS)
+            event.accept(ItemRegistry.HONEY_COOKIE.get());
     }
 
     /*public void dataSetup(GatherDataEvent event) {
