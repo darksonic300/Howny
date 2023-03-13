@@ -3,6 +3,7 @@ package dev.rosyo.howny.server.datagen.loottable;
 import dev.rosyo.howny.common.registry.BlockRegistry;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -15,7 +16,9 @@ public class HownyBlockLootTable extends BlockLootSubProvider {
 
     @Override
     protected void generate() {
+        this.dropSelf(BlockRegistry.APIARY_BLOCK.get());
         this.dropSelf(BlockRegistry.HONEY_TAP.get());
+        this.dropOther(BlockRegistry.HONEY_CAULDRON.get(), Items.CAULDRON);
     }
 
     @Override

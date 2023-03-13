@@ -2,12 +2,17 @@ package dev.rosyo.howny.server.datagen.provider;
 
 import dev.rosyo.howny.Howny;
 import dev.rosyo.howny.common.registry.BlockRegistry;
+import dev.rosyo.howny.common.registry.ItemRegistry;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 
 import javax.annotation.Nullable;
@@ -30,6 +35,25 @@ public class HownyRecipeProvider extends RecipeProvider implements IConditionBui
                 .unlockedBy("has_iron_ingot", inventoryTrigger(ItemPredicate.Builder.item()
                         .of(Items.IRON_INGOT).build()))
                 .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.BEE_HEART.get())
+                .define('H', Blocks.HONEY_BLOCK).define('O', Items.ENDER_EYE)
+                .define('T', Items.GHAST_TEAR)
+                .pattern("HHH")
+                .pattern("TOT")
+                .pattern("HHH")
+                .unlockedBy(getHasName(Items.ENDER_EYE), has(Items.ENDER_EYE))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, ItemRegistry.HONEY_COOKIE.get(), 4)
+                .define('H', Items.HONEY_BOTTLE).define('C', Items.COOKIE)
+                .pattern(" C ")
+                .pattern("CHC")
+                .pattern(" C ")
+                .unlockedBy(getHasName(Items.COOKIE), has(Items.COOKIE))
+                .save(consumer);
+
+        //ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.ENCHANTED_BOOK.ench);
     }
 
     protected static void nineBlockStorageRecipes(Consumer<FinishedRecipe> p_249580_, RecipeCategory p_251203_, ItemLike p_251689_, RecipeCategory p_251376_, ItemLike p_248771_) {

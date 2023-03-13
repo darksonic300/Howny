@@ -8,12 +8,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.MendingEnchantment;
 
 public class StingEnchantment extends Enchantment {
     private static final float CHANCE_PER_LEVEL = 0.15F;
     public StingEnchantment(Enchantment.Rarity rarity, EquipmentSlot... slots) {
         super(rarity, EnchantmentCategory.WEAPON, slots);
     }
+
 
     @Override
     public void doPostAttack(LivingEntity livingEntity, Entity entity, int k) {
@@ -25,7 +27,7 @@ public class StingEnchantment extends Enchantment {
 
     @Override
     public boolean canEnchant(ItemStack p_44689_) {
-        return super.canEnchant(p_44689_);
+        return true;
     }
 
     public int getMinCost(int p_45000_) {
