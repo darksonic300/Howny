@@ -24,7 +24,7 @@ public class BlockRegistry {
     public static final RegistryObject<Block> HONEY_TAP = registerBlock("honey_tap",
             () -> new HoneyTapBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)
                     .noOcclusion().dynamicShape().instabreak().randomTicks()));
-    public static final RegistryObject<Block> HONEY_CAULDRON = registerBlock("honey_cauldron",
+    public static final RegistryObject<Block> HONEY_CAULDRON = registerBlockWithoutItem("honey_cauldron",
             () -> new HoneyCauldronBlock(BlockBehaviour.Properties.copy(CAULDRON)));
 
     public static final RegistryObject<Block> APIARY_BLOCK = registerBlock("apiary_block",
@@ -34,6 +34,10 @@ public class BlockRegistry {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn);
         return toReturn;
+    }
+
+    private static <T extends Block> RegistryObject<T> registerBlockWithoutItem(String name, Supplier<T> block) {
+        return BLOCKS.register(name, block);
     }
 
     private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block) {
