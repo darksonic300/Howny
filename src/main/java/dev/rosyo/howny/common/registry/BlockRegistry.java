@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 import static net.minecraft.world.level.block.Blocks.CAULDRON;
 
 public class BlockRegistry {
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Howny.MODID);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Howny.MOD_ID);
 
     public static final RegistryObject<Block> HONEY_TAP = registerBlock("honey_tap",
             () -> new HoneyTapBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)

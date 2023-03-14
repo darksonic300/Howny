@@ -12,7 +12,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class HownyItemModelProvider extends ItemModelProvider {
     public HownyItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, Howny.MODID, existingFileHelper);
+        super(output, Howny.MOD_ID, existingFileHelper);
     }
 
     @Override
@@ -22,18 +22,18 @@ public class HownyItemModelProvider extends ItemModelProvider {
     private ItemModelBuilder saplingItem(RegistryObject<Block> item) {
         return withExistingParent(item.getId().getPath(),
                 new ResourceLocation("item/generated")).texture("layer0",
-                new ResourceLocation(Howny.MODID,"block/" + item.getId().getPath()));
+                new ResourceLocation(Howny.MOD_ID,"block/" + item.getId().getPath()));
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {
         return withExistingParent(item.getId().getPath(),
                 new ResourceLocation("item/generated")).texture("layer0",
-                new ResourceLocation(Howny.MODID,"item/" + item.getId().getPath()));
+                new ResourceLocation(Howny.MOD_ID,"item/" + item.getId().getPath()));
     }
 
     private ItemModelBuilder handheldItem(RegistryObject<Item> item) {
         return withExistingParent(item.getId().getPath(),
                 new ResourceLocation("item/handheld")).texture("layer0",
-                new ResourceLocation(Howny.MODID,"item/" + item.getId().getPath()));
+                new ResourceLocation(Howny.MOD_ID,"item/" + item.getId().getPath()));
     }
 }

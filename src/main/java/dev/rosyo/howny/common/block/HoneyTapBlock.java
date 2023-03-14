@@ -28,12 +28,10 @@ public class HoneyTapBlock extends Block {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-
-    private static final VoxelShape SHAPE =  Block.box(0, 0, 0, 16, 8, 16);
-    private static final VoxelShape SHAPE_N = makeShape('n');
-    private static final VoxelShape SHAPE_E = makeShape('e');
-    private static final VoxelShape SHAPE_S = makeShape('s');
-    private static final VoxelShape SHAPE_W = makeShape('w');
+    private static final VoxelShape SHAPE_N = Block.box(6, 5, 14, 10, 9, 16);
+    private static final VoxelShape SHAPE_E = Block.box(0, 5, 6, 2, 9, 10);
+    private static final VoxelShape SHAPE_S = Block.box(6, 5, 0, 10, 9, 2);
+    private static final VoxelShape SHAPE_W = Block.box(14, 5, 6, 16, 9, 10);
 
     public HoneyTapBlock(Properties properties) {
         super(properties);
@@ -71,26 +69,17 @@ public class HoneyTapBlock extends Block {
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        return SHAPE;
-    }
-
-    public static VoxelShape makeShape(char direction){
-        VoxelShape shape = Shapes.empty();
-
-        switch (direction){
-            case 'n':
-                shape = Shapes.join(shape, Shapes.box(0, 0, 0, 16, 8, 16), BooleanOp.OR);
-            case 'e':
-                shape = Shapes.join(shape, Shapes.box(0, 0, 0, 16, 8, 16), BooleanOp.OR);
-            case 's':
-                shape = Shapes.join(shape, Shapes.box(0, 0, 0, 16, 8, 16), BooleanOp.OR);
-            case 'w':
-                shape = Shapes.join(shape, Shapes.box(0, 0, 0, 16, 8, 16), BooleanOp.OR);
+        switch ((Direction)pState.getValue(FACING)) {
+            case EAST:
+                return SHAPE_E;
+            case WEST:
+                return SHAPE_W;
+            case SOUTH:
+                return SHAPE_S;
+            case NORTH:
             default:
-                shape = Shapes.join(shape, Shapes.box(0, 0, 0, 16, 8, 16), BooleanOp.OR);
+                return SHAPE_N;
         }
-
-        return shape;
     }
 
     /* FACING */

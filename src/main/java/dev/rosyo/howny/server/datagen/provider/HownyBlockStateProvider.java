@@ -9,7 +9,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class HownyBlockStateProvider extends BlockStateProvider {
     public HownyBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
-        super(output, Howny.MODID, exFileHelper);
+        super(output, Howny.MOD_ID, exFileHelper);
     }
 
     @Override

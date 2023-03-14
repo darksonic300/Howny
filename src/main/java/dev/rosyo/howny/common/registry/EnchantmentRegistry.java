@@ -11,7 +11,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class EnchantmentRegistry {
 
-    public static final DeferredRegister<Enchantment> ENCHANTMENTS = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, Howny.MODID);
+    public static final DeferredRegister<Enchantment> ENCHANTMENTS = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, Howny.MOD_ID);
 
     public static final RegistryObject<Enchantment> STING = ENCHANTMENTS.register("sting",
             () -> new StingEnchantment(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND));

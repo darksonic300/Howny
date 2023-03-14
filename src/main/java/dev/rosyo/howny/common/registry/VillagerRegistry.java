@@ -15,8 +15,8 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.Set;
 
 public class VillagerRegistry {
-    private static final DeferredRegister<PoiType> POI_TYPES = DeferredRegister.create(ForgeRegistries.POI_TYPES, Howny.MODID);
-    public static final DeferredRegister<VillagerProfession> VILLAGER_PROFESSION = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, Howny.MODID);
+    private static final DeferredRegister<PoiType> POI_TYPES = DeferredRegister.create(ForgeRegistries.POI_TYPES, Howny.MOD_ID);
+    public static final DeferredRegister<VillagerProfession> VILLAGER_PROFESSION = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, Howny.MOD_ID);
 
     public static final RegistryObject<PoiType> BEE_KEEPER_POI = POI_TYPES.register("bee_keeper_poi",
             () -> new PoiType(getAllStates(BlockRegistry.APIARY_BLOCK.get()), 2, 16));
