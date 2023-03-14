@@ -11,12 +11,18 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.MendingEnchantment;
 
 public class StingEnchantment extends Enchantment {
+
+    //TODO: Enchantment can be applied to every item
+
     private static final float CHANCE_PER_LEVEL = 0.15F;
+
     public StingEnchantment(Enchantment.Rarity rarity, EquipmentSlot... slots) {
         super(rarity, EnchantmentCategory.WEAPON, slots);
     }
 
-
+    /**
+     *  Method responsible for applying the Poison effect to the target after the attack.
+     */
     @Override
     public void doPostAttack(LivingEntity livingEntity, Entity entity, int k) {
         if (entity instanceof LivingEntity livingentity) {

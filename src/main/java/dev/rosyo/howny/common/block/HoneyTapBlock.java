@@ -25,7 +25,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.slf4j.Logger;
 
 public class HoneyTapBlock extends Block {
-    private static final Logger LOGGER = LogUtils.getLogger();
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     private static final VoxelShape SHAPE_N = Block.box(6, 5, 14, 10, 9, 16);
@@ -37,7 +36,12 @@ public class HoneyTapBlock extends Block {
         super(properties);
     }
 
-
+    /**
+     *  Method that checks using randomTicks if the TapBlock is placed in front of a beehive
+     *  and above a cauldron.
+     *  In case this is true, if the hive's HONEY LEVEL is full and the cauldron's LEVEL isn't
+     *  the TapBlock will empty the hive and fill one level of the cauldron.
+     */
     @Override
     public void tick(BlockState blockState, ServerLevel level, BlockPos blockPos, RandomSource randomSource) {
         Direction direction = blockState.getValue(FACING);
@@ -46,9 +50,9 @@ public class HoneyTapBlock extends Block {
         Block tank = level.getBlockState(blockPos.below()).getBlock();
         BlockState tankState = level.getBlockState(blockPos.below());
 
-        if(hive instanceof BeehiveBlock) {
+        if(hive instanceof BeehiveBlock) {      // Checking the block is in front of a hive and is full
             if (hiveState.getValue(BeehiveBlock.HONEY_LEVEL) == BeehiveBlock.MAX_HONEY_LEVELS) {
-                if (tank instanceof CauldronBlock) {
+                if (tank instanceof CauldronBlock) {    // Check if the block underneath is a cauldron, or a honey cauldron and fills one level
 
                     ((BeehiveBlock) hive).resetHoneyLevel(level, hiveState, blockPos.relative(direction.getOpposite()));
                     level.setBlockAndUpdate(blockPos.below(), BlockRegistry.HONEY_CAULDRON.get().defaultBlockState());
@@ -67,6 +71,9 @@ public class HoneyTapBlock extends Block {
         super.tick(blockState, level, blockPos, randomSource);
     }
 
+    /**
+     *  Method that applies the selected VoxelShape to the block
+     */
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
         switch ((Direction)pState.getValue(FACING)) {

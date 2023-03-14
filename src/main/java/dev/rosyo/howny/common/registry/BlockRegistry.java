@@ -30,6 +30,11 @@ public class BlockRegistry {
     public static final RegistryObject<Block> APIARY_BLOCK = registerBlock("apiary_block",
             () -> new BeehiveBlock(BlockBehaviour.Properties.copy(Blocks.BEEHIVE)));
 
+
+    /**
+     * Method that registers Blocks and their respective item.
+     */
+
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn);
