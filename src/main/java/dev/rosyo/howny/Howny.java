@@ -7,6 +7,7 @@ import dev.rosyo.howny.common.registry.EnchantmentRegistry;
 import dev.rosyo.howny.common.registry.ItemRegistry;
 import dev.rosyo.howny.common.registry.VillagerRegistry;
 import dev.rosyo.howny.common.util.HoneyCauldronInteraction;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -45,6 +46,9 @@ public class Howny {
     }
 
     private void addCreative(CreativeModeTabEvent.BuildContents event) {
+        if (event.getTab() == CreativeModeTabs.FUNCTIONAL_BLOCKS) event.accept(BlockRegistry.HONEY_TAP.get());
+        if (event.getTab() == CreativeModeTabs.INGREDIENTS) event.accept(ItemRegistry.BEE_HEART.get());
+        if (event.getTab() == CreativeModeTabs.FOOD_AND_DRINKS) event.accept(ItemRegistry.HONEY_COOKIE.get());
         if(event.getTab() == ModCreativeModeTabs.HOWNY_TAB) {
             event.accept(ItemRegistry.BEE_HEART.get());
             event.accept(ItemRegistry.HONEY_COOKIE.get());
