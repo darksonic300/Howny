@@ -31,7 +31,7 @@ public class HoneyTapBlock extends Block {
 
     //Fill cauldron with honey
     @Override
-    public void tick(BlockState blockState, ServerLevel level, BlockPos blockPos, RandomSource randomSource) {
+    public void randomTick(BlockState blockState, ServerLevel level, BlockPos blockPos, RandomSource randomSource) {
         BlockPos posBlockPlacedOn = blockPos.relative(getOppositeFaceDirection(blockState));
         Block blockPlacedOn = level.getBlockState(posBlockPlacedOn).getBlock();
         Block tank = level.getBlockState(blockPos.below()).getBlock();
@@ -41,18 +41,19 @@ public class HoneyTapBlock extends Block {
         if (ableToFillWithHoney(tankState, tank, blockPlacedOn)) {
             BlockState blockPlacedOnState = level.getBlockState(posBlockPlacedOn);
 
-            //If tap is able to start working, honey from beehive is removed and some ambient details are executed
+            //If tap is able to collect, honey is removed and some ambient details are executed
             level.playSound(null, blockPos.below(), SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
             level.gameEvent(null, GameEvent.FLUID_PLACE, blockPos.below());
 
-            if (tank instanceof CauldronBlock) {
-                if (blockPlacedOnState.getValue(BeehiveBlock.HONEY_LEVEL) == BeehiveBlock.MAX_HONEY_LEVELS) {
+            //Tank is filled with honey collected from block
+            if (canCollectHoney(blockPlacedOn, posBlockPlacedOn, blockPlacedOnState, level)) {
+                if (tank instanceof CauldronBlock) {
                     level.setBlockAndUpdate(blockPos.below(), BlockRegistry.HONEY_CAULDRON.get().defaultBlockState());
                 }
-            }
 
-            if (tank instanceof HoneyCauldronBlock && !((HoneyCauldronBlock) tank).isFull(tankState)) {
-                level.setBlockAndUpdate(blockPos.below(), tankState.cycle(HoneyCauldronBlock.LEVEL));
+                if (tank instanceof HoneyCauldronBlock && !((HoneyCauldronBlock) tank).isFull(tankState)) {
+                    level.setBlockAndUpdate(blockPos.below(), tankState.cycle(HoneyCauldronBlock.LEVEL));
+                }
             }
         }
 
@@ -62,7 +63,7 @@ public class HoneyTapBlock extends Block {
 
     //Checks if tap is able to start working
     private boolean ableToFillWithHoney(BlockState tankState, Block tank, Block blockPlacedOn) {
-        if (blockPlacedOn instanceof BeehiveBlock) {
+        if (blockPlacedOn instanceof BeehiveBlock || blockPlacedOn instanceof FilledHoneycombBlock) {
             if (tank instanceof CauldronBlock) return true;
             if (tank instanceof HoneyCauldronBlock && !((HoneyCauldronBlock) tank).isFull(tankState)) return true;
         }
@@ -71,14 +72,18 @@ public class HoneyTapBlock extends Block {
     }
 
     //If block that is getting collected is BeehiveBlock or FilledHoneycombBlock, change to unfilled with honey
-    private void collectedBlock(Block blockPlacedOn, BlockPos posBlockPlacedOn, BlockState blockPlacedOnState, ServerLevel level){
-        if(blockPlacedOn instanceof BeehiveBlock){
+    private boolean canCollectHoney(Block blockPlacedOn, BlockPos posBlockPlacedOn, BlockState blockPlacedOnState, ServerLevel level) {
+        if (blockPlacedOn instanceof BeehiveBlock && blockPlacedOnState.getValue(BeehiveBlock.HONEY_LEVEL) == BeehiveBlock.MAX_HONEY_LEVELS) {
             ((BeehiveBlock) blockPlacedOn).resetHoneyLevel(level, blockPlacedOnState, posBlockPlacedOn);
+            return true;
         }
 
-        if(blockPlacedOn instanceof FilledHoneycombBlock){
-            level.setBlockAndUpdate(posBlockPlacedOn, Blocks.HONEY_BLOCK.defaultBlockState());
+        if (blockPlacedOn instanceof FilledHoneycombBlock) {
+            level.setBlockAndUpdate(posBlockPlacedOn, Blocks.HONEYCOMB_BLOCK.defaultBlockState());
+            return true;
         }
+
+        return false;
     }
 
 
