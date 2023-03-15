@@ -39,22 +39,19 @@ public class HoneyTapBlock extends Block {
 
         //Checks if block that tap is placed on is Beehive and whether beehive honey will be stored is cauldron block.
         if (ableToFillWithHoney(tankState, tank, blockPlacedOn)) {
-            BlockState hiveState = level.getBlockState(posBlockPlacedOn);
+            BlockState blockPlacedOnState = level.getBlockState(posBlockPlacedOn);
 
             //If tap is able to start working, honey from beehive is removed and some ambient details are executed
-            ((BeehiveBlock) blockPlacedOn).resetHoneyLevel(level, hiveState, posBlockPlacedOn);
             level.playSound(null, blockPos.below(), SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
             level.gameEvent(null, GameEvent.FLUID_PLACE, blockPos.below());
 
-
             if (tank instanceof CauldronBlock) {
-                //Checks if beehive is full of honey
-                if (hiveState.getValue(BeehiveBlock.HONEY_LEVEL) == BeehiveBlock.MAX_HONEY_LEVELS) {
+                if (blockPlacedOnState.getValue(BeehiveBlock.HONEY_LEVEL) == BeehiveBlock.MAX_HONEY_LEVELS) {
                     level.setBlockAndUpdate(blockPos.below(), BlockRegistry.HONEY_CAULDRON.get().defaultBlockState());
                 }
+            }
 
-                //Else, if tank is HoneyCauldron, checks if it isn't full to keep fulling it.
-            } else if (tank instanceof HoneyCauldronBlock && !((HoneyCauldronBlock) tank).isFull(tankState)) {
+            if (tank instanceof HoneyCauldronBlock && !((HoneyCauldronBlock) tank).isFull(tankState)) {
                 level.setBlockAndUpdate(blockPos.below(), tankState.cycle(HoneyCauldronBlock.LEVEL));
             }
         }
@@ -73,12 +70,23 @@ public class HoneyTapBlock extends Block {
         return false;
     }
 
+    //If block that is getting collected is BeehiveBlock or FilledHoneycombBlock, change to unfilled with honey
+    private void collectedBlock(Block blockPlacedOn, BlockPos posBlockPlacedOn, BlockState blockPlacedOnState, ServerLevel level){
+        if(blockPlacedOn instanceof BeehiveBlock){
+            ((BeehiveBlock) blockPlacedOn).resetHoneyLevel(level, blockPlacedOnState, posBlockPlacedOn);
+        }
+
+        if(blockPlacedOn instanceof FilledHoneycombBlock){
+            level.setBlockAndUpdate(posBlockPlacedOn, Blocks.HONEY_BLOCK.defaultBlockState());
+        }
+    }
+
 
     /* BLOCK PLACEMENT LOGIC */
 
     @Override
     public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, BlockPos neighbourBlockPos, boolean b) {
-        if(!canSurvive(blockState, level, blockPos)){
+        if (!canSurvive(blockState, level, blockPos)) {
             level.destroyBlock(blockPos, true);
         }
 
@@ -113,10 +121,14 @@ public class HoneyTapBlock extends Block {
         VoxelShape SHAPE = Block.box(4, 4, 4, 12, 12, 12);
 
         switch (direction) {
-            case SOUTH: return SHAPE.move(0, 0, -0.25);
-            case NORTH: return SHAPE.move(0, 0, +0.25);
-            case EAST: return SHAPE.move(-0.25, 0,0);
-            case WEST: return SHAPE.move(+0.25, 0,0);
+            case SOUTH:
+                return SHAPE.move(0, 0, -0.25);
+            case NORTH:
+                return SHAPE.move(0, 0, +0.25);
+            case EAST:
+                return SHAPE.move(-0.25, 0, 0);
+            case WEST:
+                return SHAPE.move(+0.25, 0, 0);
         }
 
         return SHAPE;
