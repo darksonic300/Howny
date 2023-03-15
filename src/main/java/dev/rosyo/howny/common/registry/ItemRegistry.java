@@ -8,6 +8,10 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class ItemRegistry {
 
     //TODO: Add a BeeBomb Item - Based on the number of collected bees, they will be released on throw and attack the closest entity different from a bee.
@@ -24,5 +28,4 @@ public class ItemRegistry {
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }
-
 }

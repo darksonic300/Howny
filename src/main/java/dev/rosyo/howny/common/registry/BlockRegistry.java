@@ -1,6 +1,7 @@
 package dev.rosyo.howny.common.registry;
 
 import dev.rosyo.howny.Howny;
+import dev.rosyo.howny.common.block.FilledHoneycombBlock;
 import dev.rosyo.howny.common.block.HoneyCauldronBlock;
 import dev.rosyo.howny.common.block.HoneyTapBlock;
 import net.minecraft.world.item.BlockItem;
@@ -30,6 +31,8 @@ public class BlockRegistry {
     public static final RegistryObject<Block> APIARY_BLOCK = registerOneCountBlock("apiary_block",
             () -> new BeehiveBlock(BlockBehaviour.Properties.copy(Blocks.BEEHIVE)));
 
+    public static final RegistryObject<Block> FILLED_HONEYCOMB = registerBlock("filled_honeycomb",
+            () -> new FilledHoneycombBlock(BlockBehaviour.Properties.copy(Blocks.HONEY_BLOCK)));
 
     /**
      * Method that registers Blocks and their respective item.
