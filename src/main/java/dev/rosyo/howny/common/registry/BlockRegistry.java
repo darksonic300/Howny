@@ -27,7 +27,7 @@ public class BlockRegistry {
     public static final RegistryObject<Block> HONEY_CAULDRON = registerBlockWithoutItem("honey_cauldron",
             () -> new HoneyCauldronBlock(BlockBehaviour.Properties.copy(CAULDRON)));
 
-    public static final RegistryObject<Block> APIARY_BLOCK = registerBlock("apiary_block",
+    public static final RegistryObject<Block> APIARY_BLOCK = registerOneCountBlock("apiary_block",
             () -> new BeehiveBlock(BlockBehaviour.Properties.copy(Blocks.BEEHIVE)));
 
 
@@ -41,12 +41,22 @@ public class BlockRegistry {
         return toReturn;
     }
 
+    private static <T extends Block> RegistryObject<T> registerOneCountBlock(String name, Supplier<T> block) {
+        RegistryObject<T> toReturn = BLOCKS.register(name, block);
+        registerOneCountBlockItem(name, toReturn);
+        return toReturn;
+    }
+
     private static <T extends Block> RegistryObject<T> registerBlockWithoutItem(String name, Supplier<T> block) {
         return BLOCKS.register(name, block);
     }
 
     private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block) {
         return ItemRegistry.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+    }
+
+    private static <T extends Block> RegistryObject<Item> registerOneCountBlockItem(String name, RegistryObject<T> block) {
+        return ItemRegistry.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().stacksTo(1)));
     }
 
     public static void register(IEventBus eventBus) {
