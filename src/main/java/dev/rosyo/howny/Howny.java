@@ -54,6 +54,7 @@ public class Howny {
         }
     }
 
+    // Used to add an enchanted book item with every level of it
     void addEnchantmentBooks(Enchantment enchantment , CreativeModeTabEvent.BuildContents event) {
         for(int i = 1; i < enchantment.getMaxLevel(); i++) {
             event.accept(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment, i)));

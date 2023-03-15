@@ -12,9 +12,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -35,6 +38,23 @@ public class HoneyTapBlock extends Block {
 
     public HoneyTapBlock(Properties properties) {
         super(properties);
+    }
+
+    public boolean canSurvive(BlockState p_53186_, LevelReader p_53187_, BlockPos p_53188_) {
+        return canAttach(p_53187_, p_53188_, getConnectedDirection(p_53186_).getOpposite());
+    }
+
+    public static boolean canAttach(LevelReader p_53197_, BlockPos p_53198_, Direction p_53199_) {
+        BlockPos blockpos = p_53198_.relative(p_53199_);
+        return p_53197_.getBlockState(blockpos).isFaceSturdy(p_53197_, blockpos, p_53199_.getOpposite());
+    }
+
+    protected static Direction getConnectedDirection(BlockState p_53201_) {
+        return p_53201_.getValue(FACING);
+    }
+
+    public BlockState updateShape(BlockState p_53190_, Direction p_53191_, BlockState p_53192_, LevelAccessor p_53193_, BlockPos p_53194_, BlockPos p_53195_) {
+        return getConnectedDirection(p_53190_).getOpposite() == p_53191_ && !p_53190_.canSurvive(p_53193_, p_53194_) ? Blocks.AIR.defaultBlockState() : super.updateShape(p_53190_, p_53191_, p_53192_, p_53193_, p_53194_, p_53195_);
     }
 
 
