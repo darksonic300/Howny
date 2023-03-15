@@ -105,9 +105,7 @@ public class HoneyTapBlock extends Block {
 
     public static boolean canAttach(LevelReader levelReader, BlockPos blockPos, Direction direction) {
         BlockPos blockpos = blockPos.relative(direction);
-        boolean hasBlockToPlace = levelReader.getBlockState(blockpos).isFaceSturdy(levelReader, blockpos, direction.getOpposite());
-
-        return hasBlockToPlace;
+        return levelReader.getBlockState(blockpos).isFaceSturdy(levelReader, blockpos, direction.getOpposite());
     }
 
 
@@ -125,18 +123,13 @@ public class HoneyTapBlock extends Block {
     public static VoxelShape makeShape(Direction direction) {
         VoxelShape SHAPE = Block.box(4, 4, 4, 12, 12, 12);
 
-        switch (direction) {
-            case SOUTH:
-                return SHAPE.move(0, 0, -0.25);
-            case NORTH:
-                return SHAPE.move(0, 0, +0.25);
-            case EAST:
-                return SHAPE.move(-0.25, 0, 0);
-            case WEST:
-                return SHAPE.move(+0.25, 0, 0);
-        }
-
-        return SHAPE;
+        return switch (direction) {
+            case SOUTH -> SHAPE.move(0, 0, -0.25);
+            case NORTH -> SHAPE.move(0, 0, +0.25);
+            case EAST -> SHAPE.move(-0.25, 0, 0);
+            case WEST -> SHAPE.move(+0.25, 0, 0);
+            default -> SHAPE;
+        };
     }
 
     /* FACING */
