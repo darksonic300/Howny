@@ -1,6 +1,5 @@
 package dev.rosyo.howny.common.block;
 
-import com.mojang.logging.LogUtils;
 import dev.rosyo.howny.common.registry.BlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -8,98 +7,119 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.slf4j.Logger;
 
 public class HoneyTapBlock extends Block {
-    private static final Logger LOGGER = LogUtils.getLogger();
-
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    private static final VoxelShape SHAPE_N = Block.box(6, 5, 14, 10, 9, 16);
-    private static final VoxelShape SHAPE_E = Block.box(0, 5, 6, 2, 9, 10);
-    private static final VoxelShape SHAPE_S = Block.box(6, 5, 0, 10, 9, 2);
-    private static final VoxelShape SHAPE_W = Block.box(14, 5, 6, 16, 9, 10);
 
     public HoneyTapBlock(Properties properties) {
         super(properties);
     }
 
-    public boolean canSurvive(BlockState p_53186_, LevelReader p_53187_, BlockPos p_53188_) {
-        return canAttach(p_53187_, p_53188_, getConnectedDirection(p_53186_).getOpposite());
-    }
+    /* LOGIC HONEY FILL */
 
-    public static boolean canAttach(LevelReader p_53197_, BlockPos p_53198_, Direction p_53199_) {
-        BlockPos blockpos = p_53198_.relative(p_53199_);
-        return p_53197_.getBlockState(blockpos).isFaceSturdy(p_53197_, blockpos, p_53199_.getOpposite());
-    }
-
-    protected static Direction getConnectedDirection(BlockState p_53201_) {
-        return p_53201_.getValue(FACING);
-    }
-
-    public BlockState updateShape(BlockState p_53190_, Direction p_53191_, BlockState p_53192_, LevelAccessor p_53193_, BlockPos p_53194_, BlockPos p_53195_) {
-        return getConnectedDirection(p_53190_).getOpposite() == p_53191_ && !p_53190_.canSurvive(p_53193_, p_53194_) ? Blocks.AIR.defaultBlockState() : super.updateShape(p_53190_, p_53191_, p_53192_, p_53193_, p_53194_, p_53195_);
-    }
-
-
+    //Fill cauldron with honey
     @Override
     public void tick(BlockState blockState, ServerLevel level, BlockPos blockPos, RandomSource randomSource) {
-        Direction direction = blockState.getValue(FACING);
-        Block hive = level.getBlockState(blockPos.relative(direction.getOpposite())).getBlock();
-        BlockState hiveState = level.getBlockState(blockPos.relative(direction.getOpposite()));
+        BlockPos posBlockPlacedOn = blockPos.relative(getOppositeFaceDirection(blockState));
+        Block blockPlacedOn = level.getBlockState(posBlockPlacedOn).getBlock();
         Block tank = level.getBlockState(blockPos.below()).getBlock();
         BlockState tankState = level.getBlockState(blockPos.below());
 
-        if(hive instanceof BeehiveBlock) {
-            if (hiveState.getValue(BeehiveBlock.HONEY_LEVEL) == BeehiveBlock.MAX_HONEY_LEVELS) {
-                if (tank instanceof CauldronBlock) {
+        //Checks if block that tap is placed on is Beehive and whether beehive honey will be stored is cauldron block.
+        if (ableToFillWithHoney(tankState, tank, blockPlacedOn)) {
+            BlockState hiveState = level.getBlockState(posBlockPlacedOn);
 
-                    ((BeehiveBlock) hive).resetHoneyLevel(level, hiveState, blockPos.relative(direction.getOpposite()));
+            //If tap is able to start working, honey from beehive is removed and some ambient details are executed
+            ((BeehiveBlock) blockPlacedOn).resetHoneyLevel(level, hiveState, posBlockPlacedOn);
+            level.playSound(null, blockPos.below(), SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.gameEvent(null, GameEvent.FLUID_PLACE, blockPos.below());
+
+
+            if (tank instanceof CauldronBlock) {
+                //Checks if beehive is full of honey
+                if (hiveState.getValue(BeehiveBlock.HONEY_LEVEL) == BeehiveBlock.MAX_HONEY_LEVELS) {
                     level.setBlockAndUpdate(blockPos.below(), BlockRegistry.HONEY_CAULDRON.get().defaultBlockState());
-                    level.playSound((Player) null, blockPos.below(), SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-                    level.gameEvent((Entity) null, GameEvent.FLUID_PLACE, blockPos.below());
-
-                } else if (tank instanceof HoneyCauldronBlock && !((HoneyCauldronBlock) tank).isFull(tankState)) {
-
-                    ((BeehiveBlock) hive).resetHoneyLevel(level, hiveState, blockPos.relative(direction.getOpposite()));
-                    level.setBlockAndUpdate(blockPos.below(), tankState.cycle(HoneyCauldronBlock.LEVEL));
-                    level.playSound((Player) null, blockPos.below(), SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-                    level.gameEvent((Entity) null, GameEvent.FLUID_PLACE, blockPos.below());
                 }
+
+                //Else, if tank is HoneyCauldron, checks if it isn't full to keep fulling it.
+            } else if (tank instanceof HoneyCauldronBlock && !((HoneyCauldronBlock) tank).isFull(tankState)) {
+                level.setBlockAndUpdate(blockPos.below(), tankState.cycle(HoneyCauldronBlock.LEVEL));
             }
         }
+
         super.tick(blockState, level, blockPos, randomSource);
     }
 
-    @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        switch ((Direction)pState.getValue(FACING)) {
-            case EAST:
-                return SHAPE_E;
-            case WEST:
-                return SHAPE_W;
-            case SOUTH:
-                return SHAPE_S;
-            case NORTH:
-            default:
-                return SHAPE_N;
+
+    //Checks if tap is able to start working
+    private boolean ableToFillWithHoney(BlockState tankState, Block tank, Block blockPlacedOn) {
+        if (blockPlacedOn instanceof BeehiveBlock) {
+            if (tank instanceof CauldronBlock) return true;
+            if (tank instanceof HoneyCauldronBlock && !((HoneyCauldronBlock) tank).isFull(tankState)) return true;
         }
+
+        return false;
+    }
+
+
+    /* BLOCK PLACEMENT LOGIC */
+
+    @Override
+    public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, BlockPos neighbourBlockPos, boolean b) {
+        if(!canSurvive(blockState, level, blockPos)){
+            level.destroyBlock(blockPos, true);
+        }
+
+        super.neighborChanged(blockState, level, blockPos, block, neighbourBlockPos, b);
+    }
+
+    @Override
+    public boolean canSurvive(BlockState blockState, LevelReader levelReader, BlockPos blockPos) {
+        return canAttach(levelReader, blockPos, getOppositeFaceDirection(blockState));
+    }
+
+    public static boolean canAttach(LevelReader levelReader, BlockPos blockPos, Direction direction) {
+        BlockPos blockpos = blockPos.relative(direction);
+        boolean hasBlockToPlace = levelReader.getBlockState(blockpos).isFaceSturdy(levelReader, blockpos, direction.getOpposite());
+
+        return hasBlockToPlace;
+    }
+
+
+    /* ROTATION LOGIC */
+
+    public Direction getOppositeFaceDirection(BlockState blockState) {
+        return blockState.getValue(FACING).getOpposite();
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext context) {
+        return makeShape(blockState.getValue(FACING));
+    }
+
+    public static VoxelShape makeShape(Direction direction) {
+        VoxelShape SHAPE = Block.box(4, 4, 4, 12, 12, 12);
+
+        switch (direction) {
+            case SOUTH: return SHAPE.move(0, 0, -0.25);
+            case NORTH: return SHAPE.move(0, 0, +0.25);
+            case EAST: return SHAPE.move(-0.25, 0,0);
+            case WEST: return SHAPE.move(+0.25, 0,0);
+        }
+
+        return SHAPE;
     }
 
     /* FACING */
