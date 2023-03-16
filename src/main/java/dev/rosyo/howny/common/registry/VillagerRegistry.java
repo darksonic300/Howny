@@ -22,9 +22,9 @@ public class VillagerRegistry {
             () -> new PoiType(getAllStates(BlockRegistry.APIARY_BLOCK.get()), 2, 16));
 
     public static final RegistryObject<VillagerProfession> BEE_KEEPER =
-            VILLAGER_PROFESSION.register("bee_keeper_profession",
+            VILLAGER_PROFESSION.register("bee_keeper",
                     () -> new VillagerProfession(
-                            "bee_keeper_profession",
+                            "bee_keeper",
                             x -> x.get() == BEE_KEEPER_POI.get(), x -> x.get() == BEE_KEEPER_POI.get(),
                             ImmutableSet.of(), ImmutableSet.of(),
                             SoundEvents.BEEHIVE_ENTER));
