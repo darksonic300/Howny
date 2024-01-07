@@ -15,8 +15,8 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 
 /**
- *  A variation of the LayeredCauldronBlock class, that does not handle precipitation
- *  and is only used for honey fluid management.
+ *  A variation of the LayeredCauldronBlock class.
+ *  Precipitation is not handled and is only used for honey fluid management.
  */
 
 public class HoneyCauldronBlock extends AbstractCauldronBlock {

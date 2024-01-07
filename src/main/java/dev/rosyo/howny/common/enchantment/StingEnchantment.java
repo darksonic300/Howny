@@ -14,8 +14,6 @@ public class StingEnchantment extends Enchantment {
 
     //TODO: Enchantment can be applied to every item
 
-    private static final float CHANCE_PER_LEVEL = 0.15F;
-
     public StingEnchantment(Enchantment.Rarity rarity, EquipmentSlot... slots) {
         super(rarity, EnchantmentCategory.WEAPON, slots);
     }
@@ -60,11 +58,6 @@ public class StingEnchantment extends Enchantment {
 
     @Override
     public boolean isDiscoverable() {
-        return false;
-    }
-
-    @Override
-    public boolean isTreasureOnly() {
         return false;
     }
 

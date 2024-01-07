@@ -9,6 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.BeehiveBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -28,16 +29,17 @@ public class BlockRegistry {
     public static final RegistryObject<Block> HONEY_CAULDRON = registerBlockWithoutItem("honey_cauldron",
             () -> new HoneyCauldronBlock(BlockBehaviour.Properties.copy(CAULDRON)));
 
-    public static final RegistryObject<Block> APIARY_BLOCK = registerOneCountBlock("apiary_block",
-            () -> new BeehiveBlock(BlockBehaviour.Properties.copy(Blocks.BEEHIVE)));
 
-    public static final RegistryObject<Block> FILLED_HONEYCOMB = registerBlock("filled_honeycomb",
-            () -> new FilledHoneycombBlock(BlockBehaviour.Properties.copy(Blocks.HONEY_BLOCK)));
+    public static final RegistryObject<Block> HONEY_BRICKS = registerBlock("honey_bricks",
+            () -> new Block(BlockBehaviour.Properties.copy(Blocks.HONEY_BLOCK)));
+
+    public static final RegistryObject<Block> CHISELED_HONEY_BRICKS = registerBlock("chiseled_honey_bricks",
+            () -> new RotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.HONEY_BLOCK)));
+
 
     /**
      * Method that registers Blocks and their respective item.
      */
-
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn);

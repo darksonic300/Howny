@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "howny:block/chiseled_honey_bricks_end",
+    "side": "howny:block/chiseled_honey_bricks_side"
+  }
+}

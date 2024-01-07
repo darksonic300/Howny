@@ -1,10 +1,14 @@
+import net.minecraftforge.gradle.userdev.tasks.JarJar
+
 plugins {
     id 'eclipse'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'net.neoforged.gradle' version '[6.0.13, 6.2)'
+    id 'io.github.0ffz.github-packages' version '[1,2)'
+    id 'org.spongepowered.mixin' version '[0.7,0.8)'
 }
 
-version = '1.0'
+version = "${project.mc_version}-${project.mod_version}"
 group = 'com.rosyo.howny'
 archivesBaseName = 'howny'
 
@@ -13,7 +17,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
 
-    mappings channel: 'official', version: '1.19.3'
+    mappings channel: 'official', version: mc_version
 
     runs {
         client {
@@ -84,22 +88,49 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+    maven { url = "https://maven.theillusivec4.top/" }
+    maven { url = 'https://maven.minecraftforge.net/' }
+    maven {
+        name = 'GeckoLib'
+        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+    }
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven {
+        // location of the maven that hosts JEI files since January 2023
+        name = "Jared's maven"
+        url = "https://maven.blamejared.com/"
+    }
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+    }
+    flatDir {
+        dir 'libs'
+    }
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.3-44.1.5'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    minecraft "net.neoforged:forge:${project.mc_version}-${project.neoforge_version}"
 
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${project.mc_version}:${project.gl_version}")
 }
 
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "howny",
-                "Specification-Vendor"    : "hownysareus",
+                "Specification-Title"     : "Howny",
+                "Specification-Vendor"    : "Rosyo",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "hownysareus",
+                "Implementation-Vendor"   : "Rosyo",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
@@ -118,6 +149,20 @@ publishing {
             url "file://${project.projectDir}/mcmodsrepo"
         }
     }
+}
+
+tasks.named('jarJar', JarJar).configure {
+    archiveClassifier = ''
+}
+
+tasks.jarJar.finalizedBy('reobfJarJar')
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+build {
+    dependsOn 'jarJar'
 }
 
 tasks.withType(JavaCompile).configureEach {

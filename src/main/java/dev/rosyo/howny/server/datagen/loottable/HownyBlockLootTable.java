@@ -16,7 +16,8 @@ public class HownyBlockLootTable extends BlockLootSubProvider {
 
     @Override
     protected void generate() {
-        this.dropSelf(BlockRegistry.APIARY_BLOCK.get());
+        this.dropSelf(BlockRegistry.HONEY_BRICKS.get());
+        this.dropSelf(BlockRegistry.CHISELED_HONEY_BRICKS.get());
         this.dropSelf(BlockRegistry.HONEY_TAP.get());
         this.dropOther(BlockRegistry.HONEY_CAULDRON.get(), Items.CAULDRON);
     }

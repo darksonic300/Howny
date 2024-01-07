@@ -11,17 +11,17 @@ public class BeeHeartItem extends SimpleFoiledItem {
      *  Simple enchanted item used in the Sting Enchantment crafting.
      */
 
-    public BeeHeartItem(Properties p_41383_) {
-        super(p_41383_);
+    public BeeHeartItem(Properties properties) {
+        super(properties);
     }
 
     @Override
-    public Rarity getRarity(ItemStack p_41461_) {
+    public Rarity getRarity(ItemStack stack) {
         return Rarity.RARE;
     }
 
     @Override
-    public boolean isEnchantable(ItemStack p_41456_) {
+    public boolean isEnchantable(ItemStack stack) {
         return false;
     }
 }
