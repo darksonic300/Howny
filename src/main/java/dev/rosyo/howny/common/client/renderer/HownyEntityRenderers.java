@@ -16,5 +16,6 @@ public class HownyEntityRenderers {
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(EntityRegistry.HONEY_GOLEM.get(), HoneyGolemRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.BEAR.get(), BearRenderer::new);
     }
 }

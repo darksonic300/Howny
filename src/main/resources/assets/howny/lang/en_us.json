@@ -5,5 +5,8 @@
   "block.howny.filled_honeycomb": "Filled HoneyComb Block",
   "block.howny.honey_tap": "Honey Tap",
   "enchantment.howny.sting": "Sting",
-  "creativemodetab.howny_tab": "Howny Tab"
+  "creativemodetab.howny_tab": "Howny Tab",
+  "entity.howny.honey_golem": "Honey Golem",
+  "entity.howny.bear": "Bear",
+  "itemGroup.howny.howny_tab": "Howny"
 }

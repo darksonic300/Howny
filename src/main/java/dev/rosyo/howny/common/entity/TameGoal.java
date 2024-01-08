@@ -1,10 +1,9 @@
 package dev.rosyo.howny.common.entity;
 
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.PolarBear;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -14,18 +13,18 @@ import java.util.List;
 public class TameGoal extends Goal {
     private static final TargetingConditions PARTNER_TARGETING = TargetingConditions.forNonCombat().range(8.0D).ignoreLineOfSight();
     protected final HoneyGolem animal;
-    private final Class<? extends PolarBear> partnerClass;
+    private final Class<? extends Bear> partnerClass;
     protected final Level level;
     @Nullable
-    protected PolarBear partner;
+    protected Bear partner;
     private int tameTime;
     private final double speedModifier;
 
     public TameGoal(HoneyGolem animal, double speed) {
-        this(animal, speed, PolarBear.class);
+        this(animal, speed, Bear.class);
     }
 
-    public TameGoal(HoneyGolem animal, double speed, Class<? extends PolarBear> partner) {
+    public TameGoal(HoneyGolem animal, double speed, Class<? extends Bear> partner) {
         this.animal = animal;
         this.level = animal.level();
         this.partnerClass = partner;
@@ -34,7 +33,9 @@ public class TameGoal extends Goal {
     }
 
     public boolean canUse() {
-        this.partner = (PolarBear) this.getFreePartner();
+        this.partner = (Bear) this.getFreePartner();
+        if(animal.isPassenger())
+            return false;
         return this.partner != null;
     }
 
@@ -52,7 +53,10 @@ public class TameGoal extends Goal {
         this.animal.getNavigation().moveTo(this.partner, this.speedModifier);
         ++this.tameTime;
         if (this.tameTime >= this.adjustedTickDelay(60) && this.animal.distanceToSqr(this.partner) < 9.0D) {
-            this.tame();
+            if(RandomSource.create().nextInt(0,3) > 1)
+                this.tame();
+            else if(!partner.isVehicle())
+                animal.hurt(animal.damageSources().mobAttack(partner), 10.0f);
         }
 
     }
@@ -75,5 +79,13 @@ public class TameGoal extends Goal {
 
     protected void tame() {
         this.animal.startRiding(partner);
+
+        try {
+            partner.tame(animal.level().getPlayerByUUID(animal.getOwnerUUID()));
+        }catch (NullPointerException ignored){
+        }
+
+        partner.getNavigation().stop();
+        partner.level().broadcastEntityEvent(partner, (byte)7);
     }
 }

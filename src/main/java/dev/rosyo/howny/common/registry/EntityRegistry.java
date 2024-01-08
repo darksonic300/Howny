@@ -1,6 +1,7 @@
 package dev.rosyo.howny.common.registry;
 
 import dev.rosyo.howny.Howny;
+import dev.rosyo.howny.common.entity.Bear;
 import dev.rosyo.howny.common.entity.HoneyGolem;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -23,6 +24,11 @@ public class EntityRegistry {
                     .setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HoneyGolem::new)
                     .sized(0.5F, 0.8F));
 
+    public static final RegistryObject<EntityType<Bear>> BEAR = register("bear",
+            EntityType.Builder.<Bear>of(Bear::new, MobCategory.AMBIENT).setShouldReceiveVelocityUpdates(true)
+                    .setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(Bear::new)
+                    .sized(1.5F, 1.5F));
+
     private static <T extends Entity> RegistryObject<EntityType<T>> register(String registryname, EntityType.Builder<T> entityTypeBuilder) {
         return ENTITY_TYPES.register(registryname, () -> entityTypeBuilder.build(registryname));
     }
@@ -41,5 +47,6 @@ public class EntityRegistry {
     @SubscribeEvent
     public static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(HONEY_GOLEM.get(), HoneyGolem.createAttributes().build());
+        event.put(BEAR.get(), Bear.createAttributes().build());
     }
 }

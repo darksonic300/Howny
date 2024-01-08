@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "minecraft:cookie"
+    },
+    "H": {
+      "item": "minecraft:honey_bottle"
+    }
+  },
+  "pattern": [
+    " C ",
+    "CHC",
+    " C "
+  ],
+  "result": {
+    "count": 4,
+    "item": "howny:honey_cookie"
+  },
+  "show_notification": true
+}

@@ -1,5 +1,6 @@
 package dev.rosyo.howny.common.entity;
 
+import dev.rosyo.howny.common.registry.EntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -34,6 +35,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.PlayMessages;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -61,9 +63,13 @@ public class Bear extends TamableAnimal implements GeoEntity, NeutralMob {
         super(entityType, level);
     }
 
+    public Bear(PlayMessages.SpawnEntity spawnEntity, Level level) {
+        this(EntityRegistry.BEAR.get(), level);
+    }
+
     @javax.annotation.Nullable
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob ageableMob) {
-        return EntityType.POLAR_BEAR.create(level);
+        return EntityRegistry.BEAR.get().create(level);
     }
 
     public boolean isFood(ItemStack p_29565_) {
@@ -102,30 +108,30 @@ public class Bear extends TamableAnimal implements GeoEntity, NeutralMob {
         }
     }
 
-    public void readAdditionalSaveData(CompoundTag p_29541_) {
-        super.readAdditionalSaveData(p_29541_);
-        this.readPersistentAngerSaveData(this.level(), p_29541_);
+    public void readAdditionalSaveData(CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
+        this.readPersistentAngerSaveData(this.level(), compoundTag);
     }
 
-    public void addAdditionalSaveData(CompoundTag p_29548_) {
-        super.addAdditionalSaveData(p_29548_);
-        this.addPersistentAngerSaveData(p_29548_);
+    public void addAdditionalSaveData(CompoundTag compoundTag) {
+        super.addAdditionalSaveData(compoundTag);
+        this.addPersistentAngerSaveData(compoundTag);
     }
 
     public void startPersistentAngerTimer() {
         this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
     }
 
-    public void setRemainingPersistentAngerTime(int p_29543_) {
-        this.remainingPersistentAngerTime = p_29543_;
+    public void setRemainingPersistentAngerTime(int i) {
+        this.remainingPersistentAngerTime = i;
     }
 
     public int getRemainingPersistentAngerTime() {
         return this.remainingPersistentAngerTime;
     }
 
-    public void setPersistentAngerTarget(@javax.annotation.Nullable UUID p_29539_) {
-        this.persistentAngerTarget = p_29539_;
+    public void setPersistentAngerTarget(@javax.annotation.Nullable UUID uuid) {
+        this.persistentAngerTarget = uuid;
     }
 
     @javax.annotation.Nullable
@@ -230,33 +236,6 @@ public class Bear extends TamableAnimal implements GeoEntity, NeutralMob {
         return super.finalizeSpawn(levelAccessor, difficultyInstance, spawnType, spawnGroupData, compoundTag);
     }
 
-    protected void tickRidden(Player player, Vec3 vec3) {
-        super.tickRidden(player, vec3);
-        Vec2 vec2 = this.getRiddenRotation(player);
-        this.setRot(vec2.y, vec2.x);
-        this.yRotO = this.yBodyRot = this.yHeadRot = this.getYRot();
-    }
-
-    protected Vec2 getRiddenRotation(LivingEntity p_275502_) {
-        return new Vec2(p_275502_.getXRot() * 0.5F, p_275502_.getYRot());
-    }
-
-    protected Vec3 getRiddenInput(Player p_278278_, Vec3 p_275506_) {
-        if (this.onGround() && this.isStanding()) {
-            return Vec3.ZERO;
-        } else {
-            float f = p_278278_.xxa * 0.5F;
-            float f1 = p_278278_.zza;
-            if (f1 <= 0.0F) {
-                f1 *= 0.25F;
-            }
-            return new Vec3((double)f, 0.0D, (double)f1);
-        }
-    }
-
-    protected float getRiddenSpeed(Player p_278336_) {
-        return (float)this.getAttributeValue(Attributes.MOVEMENT_SPEED);
-    }
 
     class BearAttackPlayersGoal extends NearestAttackableTargetGoal<Player> {
         public BearAttackPlayersGoal() {
@@ -268,8 +247,8 @@ public class Bear extends TamableAnimal implements GeoEntity, NeutralMob {
                 return false;
             } else {
                 if (super.canUse()) {
-                    for(Bear Bear : Bear.this.level().getEntitiesOfClass(Bear.class, Bear.this.getBoundingBox().inflate(8.0D, 4.0D, 8.0D))) {
-                        if (Bear.isBaby()) {
+                    for(Bear bear : Bear.this.level().getEntitiesOfClass(Bear.class, Bear.this.getBoundingBox().inflate(8.0D, 4.0D, 8.0D))) {
+                        if (bear.isBaby() && !Bear.this.isVehicle()) {
                             return true;
                         }
                     }
