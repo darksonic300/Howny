@@ -1,26 +1,12 @@
 package dev.rosyo.howny.common.entity;
 
 import dev.rosyo.howny.common.registry.EntityRegistry;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.players.OldUsersConverter;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
-import net.minecraft.world.entity.ai.util.DefaultRandomPos;
-import net.minecraft.world.entity.animal.AbstractGolem;
-import net.minecraft.world.entity.animal.PolarBear;
+import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PlayMessages;
-import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -30,9 +16,7 @@ import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.EnumSet;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.Objects;
 
 public class HoneyGolem extends TamedGolem implements GeoEntity {
     private final AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
@@ -50,8 +34,10 @@ public class HoneyGolem extends TamedGolem implements GeoEntity {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new TameGoal(this, 0.9D, Bear.class));
-        this.goalSelector.addGoal(2, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(3, new RandomStrollGoal(this, 1.0f));
+        this.goalSelector.addGoal(3, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(2, new FollowOwnerRidingGoal(this, 1.0D, 10.0F, 2.0F, false));
+        this.targetSelector.addGoal(1, new RidingOwnerHurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new RidingOwnerHurtTargetGoal(this));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -59,7 +45,6 @@ public class HoneyGolem extends TamedGolem implements GeoEntity {
                 .add(Attributes.FOLLOW_RANGE, 20.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.3D);
     }
-
 
     private PlayState predicate(AnimationState animationState) {
 

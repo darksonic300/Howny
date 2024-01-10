@@ -22,12 +22,12 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.*;
+import net.minecraft.world.entity.animal.Chicken;
 import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -72,8 +72,8 @@ public class Bear extends TamableAnimal implements GeoEntity, NeutralMob {
         return EntityRegistry.BEAR.get().create(level);
     }
 
-    public boolean isFood(ItemStack p_29565_) {
-        return false;
+    public boolean isFood(ItemStack itemStack) {
+        return itemStack.is(Items.HONEY_BOTTLE);
     }
 
     protected void registerGoals() {
@@ -81,22 +81,32 @@ public class Bear extends TamableAnimal implements GeoEntity, NeutralMob {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new Bear.BearMeleeAttackGoal());
         this.goalSelector.addGoal(1, new Bear.BearPanicGoal());
-        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.25D));
+        this.goalSelector.addGoal(3, new FollowParentGoal(this, 1.25D));
         this.goalSelector.addGoal(5, new RandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
-        this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
-        this.targetSelector.addGoal(1, new Bear.BearHurtByTargetGoal());
-        this.targetSelector.addGoal(2, new Bear.BearAttackPlayersGoal());
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Fox.class, 10, true, true, (Predicate<LivingEntity>)null));
-        this.targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
+        this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+        this.targetSelector.addGoal(3, new Bear.BearHurtByTargetGoal());
+        this.targetSelector.addGoal(4, new Bear.BearAttackPlayersGoal());
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
+        this.targetSelector.addGoal(6, new NearestAttackableTargetGoal<>(this, Fox.class, 10, true, true, (Predicate<LivingEntity>)null));
+        this.targetSelector.addGoal(7, new ResetUniversalAngerTargetGoal<>(this, false));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 30.0D)
                 .add(Attributes.FOLLOW_RANGE, 20.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.25D)
-                .add(Attributes.ATTACK_DAMAGE, 6.0D);
+                .add(Attributes.ATTACK_DAMAGE, 7.0D);
+    }
+
+    @Nullable
+    public LivingEntity getControllingPassenger() {
+        if (this.isVehicle()) {
+            Entity entity = this.getFirstPassenger();
+            if (entity instanceof HoneyGolem honeyGolem)
+                return honeyGolem;
+        }
+        return null;
     }
 
     public static boolean checkBearSpawnRules(EntityType<Bear> p_218250_, LevelAccessor p_218251_, MobSpawnType p_218252_, BlockPos p_218253_, RandomSource p_218254_) {
@@ -190,7 +200,6 @@ public class Bear extends TamableAnimal implements GeoEntity, NeutralMob {
         if (!this.level().isClientSide) {
             this.updatePersistentAnger((ServerLevel)this.level(), true);
         }
-
     }
 
     public EntityDimensions getDimensions(Pose pose) {
@@ -290,13 +299,13 @@ public class Bear extends TamableAnimal implements GeoEntity, NeutralMob {
             super(Bear.this, 1.25D, true);
         }
 
-        protected void checkAndPerformAttack(LivingEntity p_29589_, double p_29590_) {
-            double d0 = this.getAttackReachSqr(p_29589_);
-            if (p_29590_ <= d0 && this.isTimeToAttack()) {
+        protected void checkAndPerformAttack(LivingEntity livingEntity, double distance) {
+            double d0 = this.getAttackReachSqr(livingEntity);
+            if (distance <= d0 && this.isTimeToAttack()) {
                 this.resetAttackCooldown();
-                this.mob.doHurtTarget(p_29589_);
+                this.mob.doHurtTarget(livingEntity);
                 Bear.this.setStanding(false);
-            } else if (p_29590_ <= d0 * 2.0D) {
+            } else if (distance <= d0 * 2.0D) {
                 if (this.isTimeToAttack()) {
                     Bear.this.setStanding(false);
                     this.resetAttackCooldown();

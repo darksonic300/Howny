@@ -134,6 +134,11 @@ public abstract class TamedGolem extends AbstractGolem implements OwnableEntity 
         return super.isAlliedTo(p_21833_);
     }
 
+    public void tame(Player player) {
+        this.setTame(true);
+        this.setOwnerUUID(player.getUUID());
+    }
+
     public void die(DamageSource p_21809_) {
         // FORGE: Super moved to top so that death message would be cancelled properly
         net.minecraft.network.chat.Component deathMessage = this.getCombatTracker().getDeathMessage();

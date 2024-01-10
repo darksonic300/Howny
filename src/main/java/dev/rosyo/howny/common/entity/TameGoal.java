@@ -53,7 +53,7 @@ public class TameGoal extends Goal {
         this.animal.getNavigation().moveTo(this.partner, this.speedModifier);
         ++this.tameTime;
         if (this.tameTime >= this.adjustedTickDelay(60) && this.animal.distanceToSqr(this.partner) < 9.0D) {
-            if(RandomSource.create().nextInt(0,3) > 1)
+            if(RandomSource.create().nextInt(0,3) > 0)
                 this.tame();
             else if(!partner.isVehicle())
                 animal.hurt(animal.damageSources().mobAttack(partner), 10.0f);
@@ -79,13 +79,13 @@ public class TameGoal extends Goal {
 
     protected void tame() {
         this.animal.startRiding(partner);
-
+    /*
         try {
             partner.tame(animal.level().getPlayerByUUID(animal.getOwnerUUID()));
         }catch (NullPointerException ignored){
         }
-
+    */
         partner.getNavigation().stop();
-        partner.level().broadcastEntityEvent(partner, (byte)7);
+        partner.level().broadcastEntityEvent(partner, (byte) 7);
     }
 }

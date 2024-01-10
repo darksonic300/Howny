@@ -50,9 +50,9 @@ public class HownyEvents {
         BlockPattern.BlockPatternMatch blockpattern$blockpatternmatch = getOrCreateHoneyGolemFull().find(level, blockPos);
         if (blockpattern$blockpatternmatch != null) {
             HoneyGolem honeygolem = EntityRegistry.HONEY_GOLEM.get().create(level);
-            if(entity instanceof Player player){
-                honeygolem.setOwnerUUID(player.getUUID());
-            }
+            if(entity instanceof Player player)
+                honeygolem.tame(player);
+
             if (honeygolem != null) {
                 spawnGolemInWorld(level, blockpattern$blockpatternmatch, honeygolem, blockpattern$blockpatternmatch.getBlock(0, 1, 0).getPos());
             }
