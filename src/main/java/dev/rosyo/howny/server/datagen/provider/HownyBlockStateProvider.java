@@ -22,7 +22,7 @@ public class HownyBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         blockWithItem(BlockRegistry.HONEY_BRICKS);
-        wood((RotatedPillarBlock) BlockRegistry.CHISELED_HONEY_BRICKS.get(), (RotatedPillarBlock) Blocks.HONEY_BLOCK);
+        //wood((RotatedPillarBlock) BlockRegistry.CHISELED_HONEY_BRICKS.get(), (RotatedPillarBlock)  BlockRegistry.HONEY_BRICKS.get());
     }
 
     public String name(Block block) {

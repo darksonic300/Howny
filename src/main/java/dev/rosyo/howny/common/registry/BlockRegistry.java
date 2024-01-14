@@ -1,16 +1,13 @@
 package dev.rosyo.howny.common.registry;
 
 import dev.rosyo.howny.Howny;
-import dev.rosyo.howny.common.block.FilledHoneycombBlock;
-import dev.rosyo.howny.common.block.HoneyCauldronBlock;
-import dev.rosyo.howny.common.block.HoneyTapBlock;
+import dev.rosyo.howny.common.block.*;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.BeehiveBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -29,6 +26,12 @@ public class BlockRegistry {
     public static final RegistryObject<Block> HONEY_CAULDRON = registerBlockWithoutItem("honey_cauldron",
             () -> new HoneyCauldronBlock(BlockBehaviour.Properties.copy(CAULDRON)));
 
+    public static final RegistryObject<Block> HONEY_PUDDLE = registerBlock("honey_puddle",
+            () -> new HoneyPuddleBlock(BlockBehaviour.Properties.of().noCollission().pushReaction(PushReaction.DESTROY).mapColor(MapColor.COLOR_ORANGE).speedFactor(0.4F).jumpFactor(0.5F).noOcclusion().sound(SoundType.HONEY_BLOCK)));
+
+    public static final RegistryObject<Block> FLOWERING_LOG = registerBlock("flowering_log_altar",
+            () -> new FloweringLogAltarBlock(BlockBehaviour.Properties.copy(Blocks.OAK_LOG)
+                    .strength(6f).requiresCorrectToolForDrops().noOcclusion()));
 
     public static final RegistryObject<Block> HONEY_BRICKS = registerBlock("honey_bricks",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.HONEY_BLOCK)));

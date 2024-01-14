@@ -1,38 +1,83 @@
 package dev.rosyo.howny.common.event;
 
 import dev.rosyo.howny.Howny;
+import dev.rosyo.howny.common.block.HoneyPuddleBlock;
 import dev.rosyo.howny.common.entity.HoneyGolem;
 import dev.rosyo.howny.common.registry.EntityRegistry;
+import dev.rosyo.howny.common.registry.ItemRegistry;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.animal.SnowGolem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.AbstractCandleBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.block.state.pattern.BlockPattern;
 import net.minecraft.world.level.block.state.pattern.BlockPatternBuilder;
 import net.minecraft.world.level.block.state.predicate.BlockStatePredicate;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Mod.EventBusSubscriber(modid = Howny.MOD_ID)
 public class HownyEvents {
 
+    @SubscribeEvent
+    public static void onClick(PlayerInteractEvent.RightClickBlock event) {
+
+        Level level = event.getLevel();
+        Player player = event.getEntity();
+        InteractionHand hand = event.getHand();
+        BlockPos pos = event.getPos();
+
+        if(player.getItemInHand(hand).is(ItemRegistry.HONEY_DIPPER.get())) {
+            BlockPos firepos = pos.above();
+            Block prefireblock = level.getBlockState(firepos).getBlock();
+            if (prefireblock.equals(Blocks.AIR)) {
+                List<BlockPos> puddles = new ArrayList<BlockPos>();
+                List<BlockPos> candles = new ArrayList<BlockPos>();
+
+                for (BlockPos np : BlockPos.betweenClosed(pos.getX() - 1, pos.getY(), pos.getZ() - 1, pos.getX() + 1, pos.getY(), pos.getZ() + 1)) {
+                    if (level.getBlockState(np).getBlock() instanceof HoneyPuddleBlock)
+                        puddles.add(np.immutable());
+                }
+                if (puddles.size() < 8)
+                    return;
+
+                for (BlockPos np : BlockPos.betweenClosed(pos.getX() - 2, pos.getY(), pos.getZ() - 2, pos.getX() + 2, pos.getY(), pos.getZ() + 2)) {
+                    if (level.getBlockState(np).getBlock() instanceof AbstractCandleBlock candleBlock)
+                            candles.add(np.immutable());
+
+                }
+                if (candles.size() < 4)
+                    return;
+
+                level.setBlockAndUpdate(firepos, Blocks.BEEHIVE.defaultBlockState());
+            } else
+                level.playLocalSound(firepos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F, true);
+        }
+    }
+
+
+
+    // Honey Golem spawning event
     @Nullable
     private static BlockPattern honeyGolem;
 
     @SubscribeEvent
-    public static void onBlockPlaceEvent(BlockEvent.EntityPlaceEvent event){
+    public static void honeyGolemSpawn(BlockEvent.EntityPlaceEvent event){
         if(event.getPlacedBlock().is(Blocks.CANDLE)){
             trySpawnGolem(event.getEntity().level(), event.getPos(), event.getEntity());
         }

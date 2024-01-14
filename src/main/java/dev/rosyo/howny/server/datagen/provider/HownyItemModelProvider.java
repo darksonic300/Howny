@@ -2,6 +2,7 @@ package dev.rosyo.howny.server.datagen.provider;
 
 import dev.rosyo.howny.Howny;
 import dev.rosyo.howny.common.registry.BlockRegistry;
+import dev.rosyo.howny.common.registry.ItemRegistry;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -20,7 +21,8 @@ public class HownyItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         this.itemBlock(BlockRegistry.HONEY_BRICKS.get());
-        this.itemBlock(BlockRegistry.CHISELED_HONEY_BRICKS.get());
+        //this.itemBlock(BlockRegistry.CHISELED_HONEY_BRICKS.get());
+        this.simpleItem(ItemRegistry.HONEY_DIPPER);
     }
 
     private ItemModelBuilder saplingItem(RegistryObject<Block> item) {

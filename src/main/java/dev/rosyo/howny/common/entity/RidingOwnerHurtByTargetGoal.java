@@ -15,13 +15,13 @@ public class RidingOwnerHurtByTargetGoal extends TargetGoal {
     private int timestamp;
 
     public RidingOwnerHurtByTargetGoal(HoneyGolem honeyGolem) {
-        super(honeyGolem, false);
+        super(honeyGolem, true);
         this.honeyGolem = honeyGolem;
         this.setFlags(EnumSet.of(Goal.Flag.TARGET));
     }
 
     public boolean canUse() {
-        if (this.honeyGolem.isTame() && this.honeyGolem.isPassenger()) {
+        if (this.honeyGolem.isPassenger()) {
             LivingEntity livingentity = this.honeyGolem.getOwner();
             if (livingentity == null) {
                 return false;
@@ -36,15 +36,14 @@ public class RidingOwnerHurtByTargetGoal extends TargetGoal {
     }
 
     public void start() {
-        this.mob.setTarget(this.ownerLastHurtBy);
-        if(this.mob.getVehicle() instanceof Bear bear)
-            bear.setTarget(this.ownerLastHurtBy);
-
-        LivingEntity livingentity = this.honeyGolem.getOwner();
-        if (livingentity != null) {
-            this.timestamp = livingentity.getLastHurtByMobTimestamp();
+        LivingEntity target = this.ownerLastHurtBy;
+        this.honeyGolem.setTarget(target);
+        if(this.honeyGolem.getVehicle() instanceof Bear bear) {
+            bear.setTarget(target);
+            // Coordinate movement with bear
+            this.honeyGolem.getNavigation().moveTo(bear, 1.0D);
+            bear.getNavigation().moveTo(this.honeyGolem.getTarget(), 1.0D);
         }
-
         super.start();
     }
 }

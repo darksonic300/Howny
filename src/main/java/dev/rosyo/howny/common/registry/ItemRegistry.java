@@ -2,6 +2,7 @@ package dev.rosyo.howny.common.registry;
 
 import dev.rosyo.howny.Howny;
 import dev.rosyo.howny.common.item.BeeHeartItem;
+import dev.rosyo.howny.common.item.HoneyDipperItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -21,6 +22,9 @@ public class ItemRegistry {
     // Item used for the sting enchantment crafting
     public static final RegistryObject<Item> BEE_HEART = ITEMS.register("bee_heart",
             () -> new BeeHeartItem(new Item.Properties().stacksTo(1)));
+
+    public static final RegistryObject<Item> HONEY_DIPPER = ITEMS.register("honey_dipper",
+            () -> new HoneyDipperItem(new Item.Properties().stacksTo(1).durability(100)));
 
     public static final RegistryObject<Item> HONEY_COOKIE = ITEMS.register("honey_cookie",
             () -> new Item(new Item.Properties().food(FoodRegistry.HONEY_COOKIE)));

@@ -5,6 +5,10 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.Bee;
+import net.minecraft.world.entity.monster.ZombifiedPiglin;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -34,16 +38,20 @@ public class HoneyGolem extends TamedGolem implements GeoEntity {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new TameGoal(this, 0.9D, Bear.class));
-        this.goalSelector.addGoal(3, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(2, new FollowOwnerRidingGoal(this, 1.0D, 10.0F, 2.0F, false));
-        this.targetSelector.addGoal(1, new RidingOwnerHurtByTargetGoal(this));
-        this.targetSelector.addGoal(2, new RidingOwnerHurtTargetGoal(this));
+        this.goalSelector.addGoal(3, new RandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(3, new RandomLookAroundGoal(this));
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Bee.class, true));
+        this.targetSelector.addGoal(2, (new HurtByTargetGoal(this)));
+        this.targetSelector.addGoal(3, new RidingOwnerHurtByTargetGoal(this));
+        this.targetSelector.addGoal(4, new RidingOwnerHurtTargetGoal(this));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 5.0D)
                 .add(Attributes.FOLLOW_RANGE, 20.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.3D);
+                .add(Attributes.MOVEMENT_SPEED, 0.3D)
+                .add(Attributes.ATTACK_DAMAGE, 1.0D);
     }
 
     private PlayState predicate(AnimationState animationState) {
