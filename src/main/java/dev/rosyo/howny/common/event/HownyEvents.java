@@ -3,6 +3,7 @@ package dev.rosyo.howny.common.event;
 import dev.rosyo.howny.Howny;
 import dev.rosyo.howny.common.block.HoneyPuddleBlock;
 import dev.rosyo.howny.common.entity.HoneyGolem;
+import dev.rosyo.howny.common.registry.BlockRegistry;
 import dev.rosyo.howny.common.registry.EntityRegistry;
 import dev.rosyo.howny.common.registry.ItemRegistry;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -11,7 +12,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -42,7 +42,7 @@ public class HownyEvents {
         InteractionHand hand = event.getHand();
         BlockPos pos = event.getPos();
 
-        if(player.getItemInHand(hand).is(ItemRegistry.HONEY_DIPPER.get())) {
+        if(player.getItemInHand(hand).is(ItemRegistry.HONEY_DIPPER.get()) && level.getBlockState(pos).is(BlockRegistry.FLOWERING_LOG_ALTAR.get())) {
             BlockPos firepos = pos.above();
             Block prefireblock = level.getBlockState(firepos).getBlock();
             if (prefireblock.equals(Blocks.AIR)) {

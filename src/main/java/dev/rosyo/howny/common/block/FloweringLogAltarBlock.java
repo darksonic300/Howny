@@ -1,14 +1,13 @@
 package dev.rosyo.howny.common.block;
 
 import dev.rosyo.howny.common.entity.FloweringLogAltarEntity;
+import dev.rosyo.howny.common.registry.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -21,16 +20,16 @@ public class FloweringLogAltarBlock extends BaseEntityBlock {
         super(properties);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (hand == InteractionHand.MAIN_HAND && level.getBlockEntity(pos) instanceof FloweringLogAltarEntity altar) {
-            if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
-                serverPlayer.setMainHandItem(altar.handleInteraction(serverPlayer, serverPlayer.getMainHandItem()));
+    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+        if (!pLevel.isClientSide()) {
+            BlockEntity entity = pLevel.getBlockEntity(pPos);
+            if(entity instanceof FloweringLogAltarEntity altar) {
+                altar.itemHandler.insertItem(1, pPlayer.getItemInHand(pHand), true);
             }
-            return InteractionResult.sidedSuccess(level.isClientSide);
         }
-        return super.use(state, level, pos, player, hand, hit);
+
+        return InteractionResult.sidedSuccess(pLevel.isClientSide());
     }
 
 
@@ -42,14 +41,8 @@ public class FloweringLogAltarBlock extends BaseEntityBlock {
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
-            Level level, BlockState state, BlockEntityType<T> type
-    ) {
-        if (level.isClientSide) return null;
-        return (entityLevel, entityState, entityType, entity) -> {
-            if (entity instanceof FloweringLogAltarEntity altar) {
-                altar.tick();
-            }
-        };
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        return createTickerHelper(type, BlockEntityRegistry.FLOWERING_LOG_ALTAR.get(),
+                FloweringLogAltarEntity::tick);
     }
 }

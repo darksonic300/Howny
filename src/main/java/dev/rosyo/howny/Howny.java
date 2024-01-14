@@ -34,6 +34,7 @@ public class Howny {
         EnchantmentRegistry.register(modEventBus);
         HownyTabs.register(modEventBus);
         EntityRegistry.register(modEventBus);
+        BlockEntityRegistry.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
         modEventBus.addListener(this::addCreative);

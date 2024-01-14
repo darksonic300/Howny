@@ -29,7 +29,7 @@ public class BlockRegistry {
     public static final RegistryObject<Block> HONEY_PUDDLE = registerBlock("honey_puddle",
             () -> new HoneyPuddleBlock(BlockBehaviour.Properties.of().noCollission().pushReaction(PushReaction.DESTROY).mapColor(MapColor.COLOR_ORANGE).speedFactor(0.4F).jumpFactor(0.5F).noOcclusion().sound(SoundType.HONEY_BLOCK)));
 
-    public static final RegistryObject<Block> FLOWERING_LOG = registerBlock("flowering_log_altar",
+    public static final RegistryObject<Block> FLOWERING_LOG_ALTAR = registerBlock("flowering_log_altar",
             () -> new FloweringLogAltarBlock(BlockBehaviour.Properties.copy(Blocks.OAK_LOG)
                     .strength(6f).requiresCorrectToolForDrops().noOcclusion()));
 
