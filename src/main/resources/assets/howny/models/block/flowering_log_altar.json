@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "howny:block/flowering_log_altar_top",
+    "east": "howny:block/flowering_log_altar",
+    "north": "howny:block/flowering_log_altar",
+    "particle": "howny:block/flowering_log_altar",
+    "south": "howny:block/flowering_log_altar",
+    "up": "howny:block/flowering_log_altar_top",
+    "west": "howny:block/flowering_log_altar"
+  }
+}

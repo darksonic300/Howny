@@ -42,6 +42,7 @@ public class ItemStackSyncS2CPacket {
         buf.writeBlockPos(pos);
     }
 
+    /*
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() -> {
@@ -51,4 +52,6 @@ public class ItemStackSyncS2CPacket {
         });
         return true;
     }
+
+     */
 }

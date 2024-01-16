@@ -1,6 +1,7 @@
 package dev.rosyo.howny.common.event;
 
 import dev.rosyo.howny.Howny;
+import dev.rosyo.howny.common.block.FloweringLogAltarBlock;
 import dev.rosyo.howny.common.block.HoneyPuddleBlock;
 import dev.rosyo.howny.common.entity.HoneyGolem;
 import dev.rosyo.howny.common.registry.BlockRegistry;
@@ -14,10 +15,12 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AbstractCandleBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.block.state.pattern.BlockPattern;
 import net.minecraft.world.level.block.state.pattern.BlockPatternBuilder;
@@ -33,6 +36,28 @@ import java.util.List;
 
 @Mod.EventBusSubscriber(modid = Howny.MOD_ID)
 public class HownyEvents {
+
+    @SubscribeEvent
+    public static void onPlayerInteract(PlayerInteractEvent.RightClickBlock event){
+        if (event.getHand() != InteractionHand.MAIN_HAND)
+            return;
+
+        // Get the player's world
+        Level level = event.getLevel();
+
+        // Get the player's position
+        BlockPos pos = event.getPos();
+
+        // Get the player's held item
+        ItemStack itemStack = event.getItemStack();
+
+        // Check if the player is interacting with a pedestal block
+        if (level.getBlockState(pos).getBlock() instanceof FloweringLogAltarBlock altarBlock) {
+            // If the item is valid for the pedestal, place it on the block
+            BlockState state = level.getBlockState(pos);
+            event.setCanceled(true);
+        }
+    }
 
     @SubscribeEvent
     public static void onClick(PlayerInteractEvent.RightClickBlock event) {

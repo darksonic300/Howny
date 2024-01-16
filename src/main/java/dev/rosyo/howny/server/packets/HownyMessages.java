@@ -29,7 +29,7 @@ public class HownyMessages {
         net.messageBuilder(ItemStackSyncS2CPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ItemStackSyncS2CPacket::new)
                 .encoder(ItemStackSyncS2CPacket::toBytes)
-                .consumerMainThread(ItemStackSyncS2CPacket::handle)
+                //.consumerMainThread(ItemStackSyncS2CPacket::handle)
                 .add();
     }
 

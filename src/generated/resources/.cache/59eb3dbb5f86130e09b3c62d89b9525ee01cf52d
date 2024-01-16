@@ -1,5 +1,6 @@
-// 1.20.1	2024-01-11T13:14:46.2800605	Loot Tables
+// 1.20.1	2024-01-16T16:47:04.5840251	Loot Tables
 9617fb218780a5e916277c95285e21867539d565 data/howny/loot_tables/blocks/chiseled_honey_bricks.json
+382c3f65a1d2ce4f838dcbd13107200fcb60271b data/howny/loot_tables/blocks/flowering_log_altar.json
 741f509d4173a337cd73f7b5c7323da98eba334c data/howny/loot_tables/blocks/honey_bricks.json
 ff856ae72308d343c9ec09e2f84899e63cb8dc82 data/howny/loot_tables/blocks/honey_cauldron.json
 4bf5a22b839cad5ec95a697f9aee6e01163103a1 data/howny/loot_tables/blocks/honey_puddle.json

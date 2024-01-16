@@ -21,6 +21,7 @@ public class HownyItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         this.itemBlock(BlockRegistry.HONEY_BRICKS.get());
+        this.itemBlock(BlockRegistry.FLOWERING_LOG_ALTAR.get());
         //this.itemBlock(BlockRegistry.CHISELED_HONEY_BRICKS.get());
         this.simpleItem(ItemRegistry.HONEY_DIPPER);
     }

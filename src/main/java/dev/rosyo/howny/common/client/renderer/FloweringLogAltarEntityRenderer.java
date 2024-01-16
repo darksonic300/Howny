@@ -19,22 +19,20 @@ import net.minecraft.world.level.LightLayer;
 
 public class FloweringLogAltarEntityRenderer implements BlockEntityRenderer<FloweringLogAltarEntity> {
 
-    public FloweringLogAltarEntityRenderer(BlockEntityRendererProvider.Context context){
-
-    }
+    public FloweringLogAltarEntityRenderer(BlockEntityRendererProvider.Context context){}
 
     @Override
     public void render(FloweringLogAltarEntity altarEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-
         ItemStack itemStack = altarEntity.getRenderStack();
+
         poseStack.pushPose();
-        poseStack.translate(0.5f, 1.1f, 0.5f);
+        poseStack.translate(0.5f, 1.05f, 0.5f);
         poseStack.scale(0.5f, 0.5f, 0.5f);
-        poseStack.mulPose(Axis.XP.rotationDegrees(90));
-        itemRenderer.renderStatic(itemStack, ItemDisplayContext.GUI, getLightLevel(altarEntity.getLevel(),
-                        altarEntity.getBlockPos()),
-                OverlayTexture.NO_OVERLAY, poseStack, bufferSource, altarEntity.getLevel(),1);
+        poseStack.mulPose(Axis.XP.rotationDegrees(270));
+
+        itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, getLightLevel(altarEntity.getLevel(), altarEntity.getBlockPos()),
+                OverlayTexture.NO_OVERLAY, poseStack, bufferSource, altarEntity.getLevel(), 1);
         poseStack.popPose();
     }
 
