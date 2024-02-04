@@ -2,7 +2,10 @@ package dev.rosyo.howny;
 
 import com.mojang.logging.LogUtils;
 import dev.rosyo.howny.common.registry.*;
+import dev.rosyo.howny.common.screen.FloweringLogScreen;
+import dev.rosyo.howny.common.screen.HownyMenuTypes;
 import dev.rosyo.howny.common.util.HoneyCauldronInteraction;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -35,6 +38,7 @@ public class Howny {
         HownyTabs.register(modEventBus);
         EntityRegistry.register(modEventBus);
         BlockEntityRegistry.register(modEventBus);
+        HownyMenuTypes.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
         modEventBus.addListener(this::addCreative);
@@ -61,7 +65,7 @@ public class Howny {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-
+            MenuScreens.register(HownyMenuTypes.FLOWERING_LOG_MENU.get(), FloweringLogScreen::new);
         }
     }
 }

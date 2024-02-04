@@ -38,28 +38,6 @@ import java.util.List;
 public class HownyEvents {
 
     @SubscribeEvent
-    public static void onPlayerInteract(PlayerInteractEvent.RightClickBlock event){
-        if (event.getHand() != InteractionHand.MAIN_HAND)
-            return;
-
-        // Get the player's world
-        Level level = event.getLevel();
-
-        // Get the player's position
-        BlockPos pos = event.getPos();
-
-        // Get the player's held item
-        ItemStack itemStack = event.getItemStack();
-
-        // Check if the player is interacting with a pedestal block
-        if (level.getBlockState(pos).getBlock() instanceof FloweringLogAltarBlock altarBlock) {
-            // If the item is valid for the pedestal, place it on the block
-            BlockState state = level.getBlockState(pos);
-            event.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent
     public static void onClick(PlayerInteractEvent.RightClickBlock event) {
 
         Level level = event.getLevel();

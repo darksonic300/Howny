@@ -1,8 +1,9 @@
 package dev.rosyo.howny.common.block;
 
-import dev.rosyo.howny.common.entity.FloweringLogAltarEntity;
+import dev.rosyo.howny.common.block.entity.FloweringLogEntity;
 import dev.rosyo.howny.common.registry.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -14,9 +15,11 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 public class FloweringLogAltarBlock extends BaseEntityBlock {
+
     public FloweringLogAltarBlock(Properties properties) {
         super(properties);
     }
@@ -30,8 +33,8 @@ public class FloweringLogAltarBlock extends BaseEntityBlock {
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.getBlock() != pNewState.getBlock()) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-            if (blockEntity instanceof FloweringLogAltarEntity) {
-                ((FloweringLogAltarEntity) blockEntity).drops();
+            if (blockEntity instanceof FloweringLogEntity) {
+                ((FloweringLogEntity) blockEntity).drops();
             }
         }
 
@@ -42,24 +45,20 @@ public class FloweringLogAltarBlock extends BaseEntityBlock {
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pPos);
-            if(entity instanceof FloweringLogAltarEntity altar) {
-                if (altar.canPlaceItem(0, pPlayer.getItemInHand(pHand))) {
-                    altar.setFirstItem(pPlayer.getItemInHand(pHand).copyWithCount(1));
-                    pPlayer.getItemInHand(pHand).shrink(1);
-                    return InteractionResult.CONSUME_PARTIAL;
-                } else {
-                    altar.popOutRecord();
-                    return InteractionResult.SUCCESS;
-                }
+            if(entity instanceof FloweringLogEntity) {
+                NetworkHooks.openScreen(((ServerPlayer)pPlayer), (FloweringLogEntity)entity, pPos);
+            } else {
+                throw new IllegalStateException("Our Container provider is missing!");
             }
         }
+
         return InteractionResult.sidedSuccess(pLevel.isClientSide());
     }
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new FloweringLogAltarEntity(blockPos, blockState);
+        return new FloweringLogEntity(blockPos, blockState);
     }
 
     @Nullable
