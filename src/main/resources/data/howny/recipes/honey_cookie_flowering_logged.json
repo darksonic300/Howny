@@ -1,0 +1,12 @@
+{
+  "type": "howny:flowering_logged",
+  "ingredients": [
+    {
+      "item": "minecraft:cookie"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "item": "howny:honey_cookie"
+  }
+}

@@ -1,6 +1,7 @@
 package dev.rosyo.howny;
 
 import com.mojang.logging.LogUtils;
+import dev.rosyo.howny.common.recipe.HownyRecipes;
 import dev.rosyo.howny.common.registry.*;
 import dev.rosyo.howny.common.screen.FloweringLogScreen;
 import dev.rosyo.howny.common.screen.HownyMenuTypes;
@@ -39,6 +40,7 @@ public class Howny {
         EntityRegistry.register(modEventBus);
         BlockEntityRegistry.register(modEventBus);
         HownyMenuTypes.register(modEventBus);
+        HownyRecipes.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
         modEventBus.addListener(this::addCreative);

@@ -68,6 +68,6 @@ public class FloweringLogAltarBlock extends BaseEntityBlock {
             return null;
 
         return createTickerHelper(pBlockEntityType, BlockEntityRegistry.FLOWERING_LOG_ALTAR.get(),
-                (pLevel1, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel1, pPos, pState1));
+                (pLevel1, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel1, pPos, pState1, new FloweringLogEntity(pPos, pState)));
     }
 }
