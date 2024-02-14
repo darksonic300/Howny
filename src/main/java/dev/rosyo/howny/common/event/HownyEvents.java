@@ -5,6 +5,7 @@ import dev.rosyo.howny.common.block.FloweringLogAltarBlock;
 import dev.rosyo.howny.common.block.HoneyPuddleBlock;
 import dev.rosyo.howny.common.entity.HoneyGolem;
 import dev.rosyo.howny.common.registry.BlockRegistry;
+import dev.rosyo.howny.common.registry.EnchantmentRegistry;
 import dev.rosyo.howny.common.registry.EntityRegistry;
 import dev.rosyo.howny.common.registry.ItemRegistry;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -13,9 +14,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.EnchantmentMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AbstractCandleBlock;
 import net.minecraft.world.level.block.Block;
@@ -25,6 +31,7 @@ import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.block.state.pattern.BlockPattern;
 import net.minecraft.world.level.block.state.pattern.BlockPatternBuilder;
 import net.minecraft.world.level.block.state.predicate.BlockStatePredicate;
+import net.minecraftforge.event.entity.living.ShieldBlockEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -38,41 +45,19 @@ import java.util.List;
 public class HownyEvents {
 
     @SubscribeEvent
-    public static void onClick(PlayerInteractEvent.RightClickBlock event) {
-
-        Level level = event.getLevel();
-        Player player = event.getEntity();
-        InteractionHand hand = event.getHand();
-        BlockPos pos = event.getPos();
-
-        if(player.getItemInHand(hand).is(ItemRegistry.HONEY_DIPPER.get()) && level.getBlockState(pos).is(BlockRegistry.FLOWERING_LOG_ALTAR.get())) {
-            BlockPos firepos = pos.above();
-            Block prefireblock = level.getBlockState(firepos).getBlock();
-            if (prefireblock.equals(Blocks.AIR)) {
-                List<BlockPos> puddles = new ArrayList<BlockPos>();
-                List<BlockPos> candles = new ArrayList<BlockPos>();
-
-                for (BlockPos np : BlockPos.betweenClosed(pos.getX() - 1, pos.getY(), pos.getZ() - 1, pos.getX() + 1, pos.getY(), pos.getZ() + 1)) {
-                    if (level.getBlockState(np).getBlock() instanceof HoneyPuddleBlock)
-                        puddles.add(np.immutable());
-                }
-                if (puddles.size() < 8)
-                    return;
-
-                for (BlockPos np : BlockPos.betweenClosed(pos.getX() - 2, pos.getY(), pos.getZ() - 2, pos.getX() + 2, pos.getY(), pos.getZ() + 2)) {
-                    if (level.getBlockState(np).getBlock() instanceof AbstractCandleBlock candleBlock)
-                            candles.add(np.immutable());
-
-                }
-                if (candles.size() < 4)
-                    return;
-
-                level.setBlockAndUpdate(firepos, Blocks.BEEHIVE.defaultBlockState());
-            } else
-                level.playLocalSound(firepos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F, true);
+    public static void onShieldBlock(ShieldBlockEvent event){
+        if(event.getDamageSource().getDirectEntity() instanceof LivingEntity livingEntity){
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 120, 2));
         }
+        for(ItemStack stack : event.getEntity().getHandSlots()){
+            if (stack.is(Items.SHIELD) && stack.getEnchantmentLevel(EnchantmentRegistry.STING.get()) > -1) {
+                if(event.getDamageSource().getEntity() instanceof LivingEntity livingEntity){
+                    livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 120, 2));
+                }
+            }
+        }
+        EnchantmentMenu
     }
-
 
 
     // Honey Golem spawning event

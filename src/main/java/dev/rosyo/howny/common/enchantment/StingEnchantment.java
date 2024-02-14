@@ -1,14 +1,18 @@
 package dev.rosyo.howny.common.enchantment;
 
+import com.mojang.blaze3d.shaders.Effect;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
-import net.minecraft.world.item.enchantment.MendingEnchantment;
+import net.minecraft.world.item.ShieldItem;
+import net.minecraft.world.item.enchantment.*;
+
+import java.util.Map;
 
 public class StingEnchantment extends Enchantment {
 
@@ -18,20 +22,14 @@ public class StingEnchantment extends Enchantment {
         super(rarity, EnchantmentCategory.WEAPON, slots);
     }
 
-    /**
-     *  Method responsible for applying the Poison effect to the target after the attack.
-     */
-    @Override
-    public void doPostAttack(LivingEntity livingEntity, Entity entity, int k) {
-        if (entity instanceof LivingEntity livingentity) {
-            int i = k * 40;
-            livingentity.addEffect(new MobEffectInstance(MobEffects.POISON, i, 2));
-        }
+    public void doPostHurt(LivingEntity livingEntity, Entity entity, int damage) {
+            if (entity != null && entity instanceof LivingEntity && damage <= 0)
+                ((LivingEntity) entity).forceAddEffect(new MobEffectInstance(MobEffects.POISON, 20, 1), livingEntity);
     }
 
     @Override
-    public boolean canEnchant(ItemStack p_44689_) {
-        return true;
+    public boolean canEnchant(ItemStack itemStack) {
+        return itemStack.getItem() instanceof ShieldItem || super.canEnchant(itemStack);
     }
 
     public int getMinCost(int p_45000_) {
@@ -65,5 +63,4 @@ public class StingEnchantment extends Enchantment {
     public boolean canApplyAtEnchantingTable(ItemStack stack) {
         return false;
     }
-
 }

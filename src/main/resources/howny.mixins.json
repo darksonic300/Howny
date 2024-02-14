@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "dev.rosyo.howny.common.mixin",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "howny.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
